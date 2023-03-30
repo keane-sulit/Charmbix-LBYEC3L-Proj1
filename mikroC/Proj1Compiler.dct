@@ -132,7 +132,6 @@ cmif
 cmif_bit
 comfrem
 compare_double
-count
 cren
 cren_bit
 csrc
@@ -176,8 +175,7 @@ delay_5ms
 delay_80us
 delay_8ms
 delay_cyc
-disp_dig
-disp_time
+dispdigit
 div_16x16_s
 div_16x16_s_l
 div_16x16_u
@@ -222,6 +220,8 @@ go_done_bit
 go_not_done
 go_not_done_bit
 hours
+hoursones
+hourstens
 i
 ibf
 ibf_bit
@@ -231,7 +231,6 @@ ibov_bit
 ibov_trise_bit
 ics_auto
 ics_off
-inc_time
 indf
 init
 int2double
@@ -241,16 +240,20 @@ inte_bit
 intedg
 intedg_bit
 interrupt
+interruptinit
 intf
 intf_bit
 irp
 irp_bit
+j
+k
+l
 longint2double
 longword2double
 main
 minutes
-mode
-modes
+minutesones
+minutestens
 mul_16x16_s
 mul_16x16_u
 mul_32x32_fp
@@ -461,6 +464,7 @@ rx9d_bit
 s
 s_bit
 sdiv3232l
+seconds
 sen
 sen_bit
 setfdz32
@@ -525,6 +529,7 @@ t2ckps1
 t2ckps1_bit
 t2con
 tmr0
+tmr0count
 tmr0ie
 tmr0ie_bit
 tmr0if
@@ -645,6 +650,10 @@ txreg
 txsta
 ua
 ua_bit
+updatehoursones
+updatehourstens
+updateminutesones
+updateminutestens
 vdelay_advanced_ms
 vdelay_ms
 w

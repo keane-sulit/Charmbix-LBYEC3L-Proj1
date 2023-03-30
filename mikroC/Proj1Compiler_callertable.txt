@@ -2,9 +2,13 @@ main
 	__CC2DW
 		____DoICP
 	init
-	disp_time
-		Div_16x16_S
-			Div_16x16_S_L
-		disp_dig
-	inc_time
+	interruptInit
+	updateHoursTens
+		Div_16X16_U
+	updateHoursOnes
+		Div_16X16_U
+	updateMinutesTens
+		Div_16X16_U
+	updateMinutesOnes
+		Div_16X16_U
 interrupt

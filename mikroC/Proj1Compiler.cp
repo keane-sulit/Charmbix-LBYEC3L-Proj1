@@ -1,111 +1,115 @@
 #line 1 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
-#line 15 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
-char count[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
+#line 16 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+unsigned int i = 0;
+unsigned int j = 0;
+unsigned int k = 0;
+unsigned int l = 0;
 
-enum project_modes {
- CLOCK,
- STOPWATCH,
- COUNTDOWN_TIMER
-};
+unsigned int hoursTens = 0;
+unsigned int hoursOnes = 0;
+unsigned int minutesTens = 0;
+unsigned int minutesOnes = 0;
 
-enum clock_modes {
- CLOCK_12H,
- CLOCK_24H,
-};
+unsigned int seconds = 0;
 
-int mode = CLOCK_12H;
+unsigned int hours = 11;
+unsigned int minutes = 59;
 
-int hours = 12;
-int minutes = 59;
+unsigned char tmr0Count = 0;
 
-int i;
+char dispDigit[10] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90};
 
 void interrupt() {
- if (INTCON.RBIF) {
- INTCON.RBIF = 0;
- if (PORTB.f7 == 0) {
- if(mode == CLOCK_12H) {
- mode = CLOCK_24H;
- } else {
- mode = CLOCK_12H;
+ INTCON.f7 = 0;
+
+
+
+ if (INTCON.f2 == 1) {
+
+ tmr0Count++;
+
+ if (tmr0Count >= 76) {
+ tmr0Count = 0;
+ seconds++;
  }
+
+ TMR0 = 0;
+ INTCON.f2 = 0;
  }
- }
+
+ INTCON.f7 = 1;
 }
+
+int updateHoursTens() {
+ hoursTens = (hours/10)%10;
+ return hoursTens;
+}
+
+int updateHoursOnes() {
+ hoursOnes = hours%10;
+ return hoursOnes;
+}
+
+int updateMinutesTens() {
+ minutesTens = (minutes/10)%10;
+ return minutesTens;
+}
+
+int updateMinutesOnes() {
+ minutesOnes = minutes%10;
+ return minutesOnes;
+}
+
 void init() {
- TRISB.f7 = 1;
  TRISC = 0x00;
  TRISD = 0x00;
 }
 
-void disp_dig(int dig, int seg) {
- switch(seg){
- case 1:
- PORTD = 0x0E;
- PORTC = count[dig];
- delay_ms(10);
- break;
- case 2:
- PORTD = 0x0D;
- PORTC = count[dig];
- delay_ms(10);
- break;
- case 3:
- PORTD = 0x0B;
- PORTC = count[dig];
- delay_ms(10);
- break;
- case 4:
- PORTD = 0x07;
- PORTC = count[dig];
- delay_ms(10);
- break;
- }
-}
+void interruptInit() {
+ INTCON.f7 = 1;
+ INTCON.f6 = 1;
+ INTCON.f5 = 1;
+ OPTION_REG.f5 = 0;
+ OPTION_REG.f4 = 0;
+ OPTION_REG.f3 = 0;
 
-void disp_time(int hours, int minutes) {
- for (i = 0; i < 25; i++) {
- disp_dig(hours / 10, 1);
- disp_dig(hours % 10, 2);
- disp_dig(minutes / 10, 3);
- disp_dig(minutes % 10, 4);
- }
-}
+ OPTION_REG.f2 = 1;
+ OPTION_REG.f1 = 1;
+ OPTION_REG.f0 = 1;
 
-void inc_time() {
- if (minutes > 59) {
- minutes = 0;
- hours++;
- if (mode == CLOCK_12H) {
- if (hours > 12) {
- hours = 1;
- }
- } else {
- if (hours > 23) {
- hours = 0;
- }
- }
- }
- minutes++;
-}
-
-void modes() {
-#line 118 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+ TMR0 = 0;
 }
 
 void main() {
  init();
- disp_time(hours, minutes);
- INTCON.GIE = 1;
- INTCON.PEIE = 1;
- INTCON.RBIE = 1;
- INTCON.RBIF = 0;
- OPTION_REG.f7 = 1;
+ interruptInit();
+
 
 
  while(1) {
- disp_time(hours, minutes);
- inc_time();
+
+ PORTC = dispDigit[i];
+ PORTD = 0x01;
  delay_ms(50);
+ PORTC = dispDigit[j];
+ PORTD = 0x02;
+ delay_ms(50);
+ PORTC = dispDigit[k];
+ PORTD = 0x04;
+ delay_ms(50);
+ PORTC = dispDigit[l];
+ PORTD = 0x08;
+ delay_ms(50);
+
+ updateHoursTens();
+ updateHoursOnes();
+ updateMinutesTens();
+ updateMinutesOnes();
+
+ i = hoursTens;
+ j = hoursOnes;
+ k = minutesTens;
+ l = minutesOnes;
+#line 136 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
  }
 }

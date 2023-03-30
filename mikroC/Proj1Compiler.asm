@@ -9,43 +9,37 @@ _interrupt:
 	CLRF       PCLATH+0
 
 ;Proj1Compiler.c,35 :: 		void interrupt() {
-;Proj1Compiler.c,36 :: 		if (INTCON.RBIF) {
-	BTFSS      INTCON+0, 0
+;Proj1Compiler.c,36 :: 		INTCON.f7 = 0; // Disable Global Interrupt
+	BCF        INTCON+0, 7
+;Proj1Compiler.c,40 :: 		if (INTCON.f2 == 1) {
+	BTFSS      INTCON+0, 2
 	GOTO       L_interrupt0
-;Proj1Compiler.c,37 :: 		INTCON.RBIF = 0;
-	BCF        INTCON+0, 0
-;Proj1Compiler.c,38 :: 		if (PORTB.f7 == 0) {
-	BTFSC      PORTB+0, 7
+;Proj1Compiler.c,42 :: 		tmr0Count++;
+	INCF       _tmr0Count+0, 1
+;Proj1Compiler.c,44 :: 		if (tmr0Count >= 76) {
+	MOVLW      76
+	SUBWF      _tmr0Count+0, 0
+	BTFSS      STATUS+0, 0
 	GOTO       L_interrupt1
-;Proj1Compiler.c,39 :: 		if(mode == CLOCK_12H) {
-	MOVLW      0
-	XORWF      _mode+1, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__interrupt27
-	MOVLW      0
-	XORWF      _mode+0, 0
-L__interrupt27:
-	BTFSS      STATUS+0, 2
-	GOTO       L_interrupt2
-;Proj1Compiler.c,40 :: 		mode = CLOCK_24H;
-	MOVLW      1
-	MOVWF      _mode+0
-	CLRF       _mode+1
-;Proj1Compiler.c,41 :: 		} else {
-	GOTO       L_interrupt3
-L_interrupt2:
-;Proj1Compiler.c,42 :: 		mode = CLOCK_12H;
-	CLRF       _mode+0
-	CLRF       _mode+1
-;Proj1Compiler.c,43 :: 		}
-L_interrupt3:
-;Proj1Compiler.c,44 :: 		}
+;Proj1Compiler.c,45 :: 		tmr0Count = 0;
+	CLRF       _tmr0Count+0
+;Proj1Compiler.c,46 :: 		seconds++;
+	INCF       _seconds+0, 1
+	BTFSC      STATUS+0, 2
+	INCF       _seconds+1, 1
+;Proj1Compiler.c,47 :: 		}
 L_interrupt1:
-;Proj1Compiler.c,45 :: 		}
+;Proj1Compiler.c,49 :: 		TMR0 = 0; // Load the TMR0 register
+	CLRF       TMR0+0
+;Proj1Compiler.c,50 :: 		INTCON.f2 = 0; // Clear TMR0 Interrupt Flag
+	BCF        INTCON+0, 2
+;Proj1Compiler.c,51 :: 		}
 L_interrupt0:
-;Proj1Compiler.c,46 :: 		}
+;Proj1Compiler.c,53 :: 		INTCON.f7 = 1; // Enable Global Interrupt
+	BSF        INTCON+0, 7
+;Proj1Compiler.c,54 :: 		}
 L_end_interrupt:
-L__interrupt26:
+L__interrupt9:
 	MOVF       ___savePCLATH+0, 0
 	MOVWF      PCLATH+0
 	SWAPF      ___saveSTATUS+0, 0
@@ -55,433 +49,304 @@ L__interrupt26:
 	RETFIE
 ; end of _interrupt
 
+_updateHoursTens:
+
+;Proj1Compiler.c,56 :: 		int updateHoursTens() {
+;Proj1Compiler.c,57 :: 		hoursTens = (hours/10)%10; // Get the tens digit of hours
+	MOVLW      10
+	MOVWF      R4+0
+	MOVLW      0
+	MOVWF      R4+1
+	MOVF       _hours+0, 0
+	MOVWF      R0+0
+	MOVF       _hours+1, 0
+	MOVWF      R0+1
+	CALL       _Div_16X16_U+0
+	MOVLW      10
+	MOVWF      R4+0
+	MOVLW      0
+	MOVWF      R4+1
+	CALL       _Div_16X16_U+0
+	MOVF       R8+0, 0
+	MOVWF      R0+0
+	MOVF       R8+1, 0
+	MOVWF      R0+1
+	MOVF       R0+0, 0
+	MOVWF      _hoursTens+0
+	MOVF       R0+1, 0
+	MOVWF      _hoursTens+1
+;Proj1Compiler.c,58 :: 		return hoursTens;
+;Proj1Compiler.c,59 :: 		}
+L_end_updateHoursTens:
+	RETURN
+; end of _updateHoursTens
+
+_updateHoursOnes:
+
+;Proj1Compiler.c,61 :: 		int updateHoursOnes() {
+;Proj1Compiler.c,62 :: 		hoursOnes = hours%10; // Get the ones digit of hours
+	MOVLW      10
+	MOVWF      R4+0
+	MOVLW      0
+	MOVWF      R4+1
+	MOVF       _hours+0, 0
+	MOVWF      R0+0
+	MOVF       _hours+1, 0
+	MOVWF      R0+1
+	CALL       _Div_16X16_U+0
+	MOVF       R8+0, 0
+	MOVWF      R0+0
+	MOVF       R8+1, 0
+	MOVWF      R0+1
+	MOVF       R0+0, 0
+	MOVWF      _hoursOnes+0
+	MOVF       R0+1, 0
+	MOVWF      _hoursOnes+1
+;Proj1Compiler.c,63 :: 		return hoursOnes;
+;Proj1Compiler.c,64 :: 		}
+L_end_updateHoursOnes:
+	RETURN
+; end of _updateHoursOnes
+
+_updateMinutesTens:
+
+;Proj1Compiler.c,66 :: 		int updateMinutesTens() {
+;Proj1Compiler.c,67 :: 		minutesTens = (minutes/10)%10; // Get the tens digit of minutes
+	MOVLW      10
+	MOVWF      R4+0
+	MOVLW      0
+	MOVWF      R4+1
+	MOVF       _minutes+0, 0
+	MOVWF      R0+0
+	MOVF       _minutes+1, 0
+	MOVWF      R0+1
+	CALL       _Div_16X16_U+0
+	MOVLW      10
+	MOVWF      R4+0
+	MOVLW      0
+	MOVWF      R4+1
+	CALL       _Div_16X16_U+0
+	MOVF       R8+0, 0
+	MOVWF      R0+0
+	MOVF       R8+1, 0
+	MOVWF      R0+1
+	MOVF       R0+0, 0
+	MOVWF      _minutesTens+0
+	MOVF       R0+1, 0
+	MOVWF      _minutesTens+1
+;Proj1Compiler.c,68 :: 		return minutesTens;
+;Proj1Compiler.c,69 :: 		}
+L_end_updateMinutesTens:
+	RETURN
+; end of _updateMinutesTens
+
+_updateMinutesOnes:
+
+;Proj1Compiler.c,71 :: 		int updateMinutesOnes() {
+;Proj1Compiler.c,72 :: 		minutesOnes = minutes%10; // Get the ones digit of minutes
+	MOVLW      10
+	MOVWF      R4+0
+	MOVLW      0
+	MOVWF      R4+1
+	MOVF       _minutes+0, 0
+	MOVWF      R0+0
+	MOVF       _minutes+1, 0
+	MOVWF      R0+1
+	CALL       _Div_16X16_U+0
+	MOVF       R8+0, 0
+	MOVWF      R0+0
+	MOVF       R8+1, 0
+	MOVWF      R0+1
+	MOVF       R0+0, 0
+	MOVWF      _minutesOnes+0
+	MOVF       R0+1, 0
+	MOVWF      _minutesOnes+1
+;Proj1Compiler.c,73 :: 		return minutesOnes;
+;Proj1Compiler.c,74 :: 		}
+L_end_updateMinutesOnes:
+	RETURN
+; end of _updateMinutesOnes
+
 _init:
 
-;Proj1Compiler.c,47 :: 		void init() {
-;Proj1Compiler.c,48 :: 		TRISB.f7 = 1; // PORTB is the control bus
-	BSF        TRISB+0, 7
-;Proj1Compiler.c,49 :: 		TRISC = 0x00; // PORTC is the data bus
+;Proj1Compiler.c,76 :: 		void init() {
+;Proj1Compiler.c,77 :: 		TRISC = 0x00; // PORTC is the data bus
 	CLRF       TRISC+0
-;Proj1Compiler.c,50 :: 		TRISD = 0x00; // PORTD is the address bus
+;Proj1Compiler.c,78 :: 		TRISD = 0x00; // PORTD is the address bus
 	CLRF       TRISD+0
-;Proj1Compiler.c,51 :: 		}
+;Proj1Compiler.c,79 :: 		}
 L_end_init:
 	RETURN
 ; end of _init
 
-_disp_dig:
+_interruptInit:
 
-;Proj1Compiler.c,53 :: 		void disp_dig(int dig, int seg) {
-;Proj1Compiler.c,54 :: 		switch(seg){
-	GOTO       L_disp_dig4
-;Proj1Compiler.c,55 :: 		case 1:
-L_disp_dig6:
-;Proj1Compiler.c,56 :: 		PORTD = 0x0E;
-	MOVLW      14
-	MOVWF      PORTD+0
-;Proj1Compiler.c,57 :: 		PORTC = count[dig];
-	MOVF       FARG_disp_dig_dig+0, 0
-	ADDLW      _count+0
-	MOVWF      FSR
-	MOVF       INDF+0, 0
-	MOVWF      PORTC+0
-;Proj1Compiler.c,58 :: 		delay_ms(10);
-	MOVLW      65
-	MOVWF      R12+0
-	MOVLW      238
-	MOVWF      R13+0
-L_disp_dig7:
-	DECFSZ     R13+0, 1
-	GOTO       L_disp_dig7
-	DECFSZ     R12+0, 1
-	GOTO       L_disp_dig7
-	NOP
-;Proj1Compiler.c,59 :: 		break;
-	GOTO       L_disp_dig5
-;Proj1Compiler.c,60 :: 		case 2:
-L_disp_dig8:
-;Proj1Compiler.c,61 :: 		PORTD = 0x0D;
-	MOVLW      13
-	MOVWF      PORTD+0
-;Proj1Compiler.c,62 :: 		PORTC = count[dig];
-	MOVF       FARG_disp_dig_dig+0, 0
-	ADDLW      _count+0
-	MOVWF      FSR
-	MOVF       INDF+0, 0
-	MOVWF      PORTC+0
-;Proj1Compiler.c,63 :: 		delay_ms(10);
-	MOVLW      65
-	MOVWF      R12+0
-	MOVLW      238
-	MOVWF      R13+0
-L_disp_dig9:
-	DECFSZ     R13+0, 1
-	GOTO       L_disp_dig9
-	DECFSZ     R12+0, 1
-	GOTO       L_disp_dig9
-	NOP
-;Proj1Compiler.c,64 :: 		break;
-	GOTO       L_disp_dig5
-;Proj1Compiler.c,65 :: 		case 3:
-L_disp_dig10:
-;Proj1Compiler.c,66 :: 		PORTD = 0x0B;
-	MOVLW      11
-	MOVWF      PORTD+0
-;Proj1Compiler.c,67 :: 		PORTC = count[dig];
-	MOVF       FARG_disp_dig_dig+0, 0
-	ADDLW      _count+0
-	MOVWF      FSR
-	MOVF       INDF+0, 0
-	MOVWF      PORTC+0
-;Proj1Compiler.c,68 :: 		delay_ms(10);
-	MOVLW      65
-	MOVWF      R12+0
-	MOVLW      238
-	MOVWF      R13+0
-L_disp_dig11:
-	DECFSZ     R13+0, 1
-	GOTO       L_disp_dig11
-	DECFSZ     R12+0, 1
-	GOTO       L_disp_dig11
-	NOP
-;Proj1Compiler.c,69 :: 		break;
-	GOTO       L_disp_dig5
-;Proj1Compiler.c,70 :: 		case 4:
-L_disp_dig12:
-;Proj1Compiler.c,71 :: 		PORTD = 0x07;
-	MOVLW      7
-	MOVWF      PORTD+0
-;Proj1Compiler.c,72 :: 		PORTC = count[dig];
-	MOVF       FARG_disp_dig_dig+0, 0
-	ADDLW      _count+0
-	MOVWF      FSR
-	MOVF       INDF+0, 0
-	MOVWF      PORTC+0
-;Proj1Compiler.c,73 :: 		delay_ms(10);
-	MOVLW      65
-	MOVWF      R12+0
-	MOVLW      238
-	MOVWF      R13+0
-L_disp_dig13:
-	DECFSZ     R13+0, 1
-	GOTO       L_disp_dig13
-	DECFSZ     R12+0, 1
-	GOTO       L_disp_dig13
-	NOP
-;Proj1Compiler.c,74 :: 		break;
-	GOTO       L_disp_dig5
-;Proj1Compiler.c,75 :: 		}
-L_disp_dig4:
-	MOVLW      0
-	XORWF      FARG_disp_dig_seg+1, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__disp_dig30
-	MOVLW      1
-	XORWF      FARG_disp_dig_seg+0, 0
-L__disp_dig30:
-	BTFSC      STATUS+0, 2
-	GOTO       L_disp_dig6
-	MOVLW      0
-	XORWF      FARG_disp_dig_seg+1, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__disp_dig31
-	MOVLW      2
-	XORWF      FARG_disp_dig_seg+0, 0
-L__disp_dig31:
-	BTFSC      STATUS+0, 2
-	GOTO       L_disp_dig8
-	MOVLW      0
-	XORWF      FARG_disp_dig_seg+1, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__disp_dig32
-	MOVLW      3
-	XORWF      FARG_disp_dig_seg+0, 0
-L__disp_dig32:
-	BTFSC      STATUS+0, 2
-	GOTO       L_disp_dig10
-	MOVLW      0
-	XORWF      FARG_disp_dig_seg+1, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__disp_dig33
-	MOVLW      4
-	XORWF      FARG_disp_dig_seg+0, 0
-L__disp_dig33:
-	BTFSC      STATUS+0, 2
-	GOTO       L_disp_dig12
-L_disp_dig5:
-;Proj1Compiler.c,76 :: 		}
-L_end_disp_dig:
-	RETURN
-; end of _disp_dig
-
-_disp_time:
-
-;Proj1Compiler.c,78 :: 		void disp_time(int hours, int minutes) {
-;Proj1Compiler.c,79 :: 		for (i = 0; i < 25; i++) {
-	CLRF       _i+0
-	CLRF       _i+1
-L_disp_time14:
-	MOVLW      128
-	XORWF      _i+1, 0
-	MOVWF      R0+0
-	MOVLW      128
-	SUBWF      R0+0, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__disp_time35
-	MOVLW      25
-	SUBWF      _i+0, 0
-L__disp_time35:
-	BTFSC      STATUS+0, 0
-	GOTO       L_disp_time15
-;Proj1Compiler.c,80 :: 		disp_dig(hours / 10, 1);
-	MOVLW      10
-	MOVWF      R4+0
-	MOVLW      0
-	MOVWF      R4+1
-	MOVF       FARG_disp_time_hours+0, 0
-	MOVWF      R0+0
-	MOVF       FARG_disp_time_hours+1, 0
-	MOVWF      R0+1
-	CALL       _Div_16x16_S+0
-	MOVF       R0+0, 0
-	MOVWF      FARG_disp_dig_dig+0
-	MOVF       R0+1, 0
-	MOVWF      FARG_disp_dig_dig+1
-	MOVLW      1
-	MOVWF      FARG_disp_dig_seg+0
-	MOVLW      0
-	MOVWF      FARG_disp_dig_seg+1
-	CALL       _disp_dig+0
-;Proj1Compiler.c,81 :: 		disp_dig(hours % 10, 2);
-	MOVLW      10
-	MOVWF      R4+0
-	MOVLW      0
-	MOVWF      R4+1
-	MOVF       FARG_disp_time_hours+0, 0
-	MOVWF      R0+0
-	MOVF       FARG_disp_time_hours+1, 0
-	MOVWF      R0+1
-	CALL       _Div_16x16_S+0
-	MOVF       R8+0, 0
-	MOVWF      R0+0
-	MOVF       R8+1, 0
-	MOVWF      R0+1
-	MOVF       R0+0, 0
-	MOVWF      FARG_disp_dig_dig+0
-	MOVF       R0+1, 0
-	MOVWF      FARG_disp_dig_dig+1
-	MOVLW      2
-	MOVWF      FARG_disp_dig_seg+0
-	MOVLW      0
-	MOVWF      FARG_disp_dig_seg+1
-	CALL       _disp_dig+0
-;Proj1Compiler.c,82 :: 		disp_dig(minutes / 10, 3);
-	MOVLW      10
-	MOVWF      R4+0
-	MOVLW      0
-	MOVWF      R4+1
-	MOVF       FARG_disp_time_minutes+0, 0
-	MOVWF      R0+0
-	MOVF       FARG_disp_time_minutes+1, 0
-	MOVWF      R0+1
-	CALL       _Div_16x16_S+0
-	MOVF       R0+0, 0
-	MOVWF      FARG_disp_dig_dig+0
-	MOVF       R0+1, 0
-	MOVWF      FARG_disp_dig_dig+1
-	MOVLW      3
-	MOVWF      FARG_disp_dig_seg+0
-	MOVLW      0
-	MOVWF      FARG_disp_dig_seg+1
-	CALL       _disp_dig+0
-;Proj1Compiler.c,83 :: 		disp_dig(minutes % 10, 4);
-	MOVLW      10
-	MOVWF      R4+0
-	MOVLW      0
-	MOVWF      R4+1
-	MOVF       FARG_disp_time_minutes+0, 0
-	MOVWF      R0+0
-	MOVF       FARG_disp_time_minutes+1, 0
-	MOVWF      R0+1
-	CALL       _Div_16x16_S+0
-	MOVF       R8+0, 0
-	MOVWF      R0+0
-	MOVF       R8+1, 0
-	MOVWF      R0+1
-	MOVF       R0+0, 0
-	MOVWF      FARG_disp_dig_dig+0
-	MOVF       R0+1, 0
-	MOVWF      FARG_disp_dig_dig+1
-	MOVLW      4
-	MOVWF      FARG_disp_dig_seg+0
-	MOVLW      0
-	MOVWF      FARG_disp_dig_seg+1
-	CALL       _disp_dig+0
-;Proj1Compiler.c,79 :: 		for (i = 0; i < 25; i++) {
-	INCF       _i+0, 1
-	BTFSC      STATUS+0, 2
-	INCF       _i+1, 1
-;Proj1Compiler.c,84 :: 		}
-	GOTO       L_disp_time14
-L_disp_time15:
-;Proj1Compiler.c,85 :: 		}
-L_end_disp_time:
-	RETURN
-; end of _disp_time
-
-_inc_time:
-
-;Proj1Compiler.c,87 :: 		void inc_time() {
-;Proj1Compiler.c,88 :: 		if (minutes > 59) {
-	MOVLW      128
-	MOVWF      R0+0
-	MOVLW      128
-	XORWF      _minutes+1, 0
-	SUBWF      R0+0, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__inc_time37
-	MOVF       _minutes+0, 0
-	SUBLW      59
-L__inc_time37:
-	BTFSC      STATUS+0, 0
-	GOTO       L_inc_time17
-;Proj1Compiler.c,89 :: 		minutes = 0;
-	CLRF       _minutes+0
-	CLRF       _minutes+1
-;Proj1Compiler.c,90 :: 		hours++;
-	INCF       _hours+0, 1
-	BTFSC      STATUS+0, 2
-	INCF       _hours+1, 1
-;Proj1Compiler.c,91 :: 		if (mode == CLOCK_12H) {
-	MOVLW      0
-	XORWF      _mode+1, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__inc_time38
-	MOVLW      0
-	XORWF      _mode+0, 0
-L__inc_time38:
-	BTFSS      STATUS+0, 2
-	GOTO       L_inc_time18
-;Proj1Compiler.c,92 :: 		if (hours > 12) {
-	MOVLW      128
-	MOVWF      R0+0
-	MOVLW      128
-	XORWF      _hours+1, 0
-	SUBWF      R0+0, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__inc_time39
-	MOVF       _hours+0, 0
-	SUBLW      12
-L__inc_time39:
-	BTFSC      STATUS+0, 0
-	GOTO       L_inc_time19
-;Proj1Compiler.c,93 :: 		hours = 1;
-	MOVLW      1
-	MOVWF      _hours+0
-	MOVLW      0
-	MOVWF      _hours+1
+;Proj1Compiler.c,81 :: 		void interruptInit() {
+;Proj1Compiler.c,82 :: 		INTCON.f7 = 1; // Enable Global Interrupt
+	BSF        INTCON+0, 7
+;Proj1Compiler.c,83 :: 		INTCON.f6 = 1; // Enable Peripheral Interrupt
+	BSF        INTCON+0, 6
+;Proj1Compiler.c,84 :: 		INTCON.f5 = 1; // Enable TMR0 Interrupt
+	BSF        INTCON+0, 5
+;Proj1Compiler.c,85 :: 		OPTION_REG.f5 = 0; // Internal Instruction Cycle Clock (CLKO)
+	BCF        OPTION_REG+0, 5
+;Proj1Compiler.c,86 :: 		OPTION_REG.f4 = 0; // Increment on Low-to-High Transition on T0CKI Pin
+	BCF        OPTION_REG+0, 4
+;Proj1Compiler.c,87 :: 		OPTION_REG.f3 = 0; // Prescaler is assigned to the Timer0 module
+	BCF        OPTION_REG+0, 3
+;Proj1Compiler.c,89 :: 		OPTION_REG.f2 = 1;
+	BSF        OPTION_REG+0, 2
+;Proj1Compiler.c,90 :: 		OPTION_REG.f1 = 1;
+	BSF        OPTION_REG+0, 1
+;Proj1Compiler.c,91 :: 		OPTION_REG.f0 = 1;
+	BSF        OPTION_REG+0, 0
+;Proj1Compiler.c,93 :: 		TMR0 = 0; // Load the TMR0 register
+	CLRF       TMR0+0
 ;Proj1Compiler.c,94 :: 		}
-L_inc_time19:
-;Proj1Compiler.c,95 :: 		} else {                // mode == CLOCK_24H
-	GOTO       L_inc_time20
-L_inc_time18:
-;Proj1Compiler.c,96 :: 		if (hours > 23) {
-	MOVLW      128
-	MOVWF      R0+0
-	MOVLW      128
-	XORWF      _hours+1, 0
-	SUBWF      R0+0, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__inc_time40
-	MOVF       _hours+0, 0
-	SUBLW      23
-L__inc_time40:
-	BTFSC      STATUS+0, 0
-	GOTO       L_inc_time21
-;Proj1Compiler.c,97 :: 		hours = 0;
-	CLRF       _hours+0
-	CLRF       _hours+1
-;Proj1Compiler.c,98 :: 		}
-L_inc_time21:
-;Proj1Compiler.c,99 :: 		}
-L_inc_time20:
-;Proj1Compiler.c,100 :: 		}
-L_inc_time17:
-;Proj1Compiler.c,101 :: 		minutes++;
-	INCF       _minutes+0, 1
-	BTFSC      STATUS+0, 2
-	INCF       _minutes+1, 1
-;Proj1Compiler.c,102 :: 		}
-L_end_inc_time:
+L_end_interruptInit:
 	RETURN
-; end of _inc_time
-
-_modes:
-
-;Proj1Compiler.c,104 :: 		void modes() {
-;Proj1Compiler.c,118 :: 		}
-L_end_modes:
-	RETURN
-; end of _modes
+; end of _interruptInit
 
 _main:
 
-;Proj1Compiler.c,120 :: 		void main() {
-;Proj1Compiler.c,121 :: 		init();
+;Proj1Compiler.c,96 :: 		void main() {
+;Proj1Compiler.c,97 :: 		init();
 	CALL       _init+0
-;Proj1Compiler.c,122 :: 		disp_time(hours, minutes);
-	MOVF       _hours+0, 0
-	MOVWF      FARG_disp_time_hours+0
-	MOVF       _hours+1, 0
-	MOVWF      FARG_disp_time_hours+1
-	MOVF       _minutes+0, 0
-	MOVWF      FARG_disp_time_minutes+0
-	MOVF       _minutes+1, 0
-	MOVWF      FARG_disp_time_minutes+1
-	CALL       _disp_time+0
-;Proj1Compiler.c,123 :: 		INTCON.GIE = 1;             // Enable global interrupts
-	BSF        INTCON+0, 7
-;Proj1Compiler.c,124 :: 		INTCON.PEIE = 1;            // Enable peripheral interrupts
-	BSF        INTCON+0, 6
-;Proj1Compiler.c,125 :: 		INTCON.RBIE = 1;            // Enable RB port change interrupts
-	BSF        INTCON+0, 3
-;Proj1Compiler.c,126 :: 		INTCON.RBIF = 0;            // Clear RB port change interrupt flag
-	BCF        INTCON+0, 0
-;Proj1Compiler.c,127 :: 		OPTION_REG.f7 = 1;          // Enable pull-up resistor for RB7
-	BSF        OPTION_REG+0, 7
-;Proj1Compiler.c,130 :: 		while(1) {
-L_main22:
-;Proj1Compiler.c,131 :: 		disp_time(hours, minutes);
-	MOVF       _hours+0, 0
-	MOVWF      FARG_disp_time_hours+0
-	MOVF       _hours+1, 0
-	MOVWF      FARG_disp_time_hours+1
-	MOVF       _minutes+0, 0
-	MOVWF      FARG_disp_time_minutes+0
-	MOVF       _minutes+1, 0
-	MOVWF      FARG_disp_time_minutes+1
-	CALL       _disp_time+0
-;Proj1Compiler.c,132 :: 		inc_time();
-	CALL       _inc_time+0
-;Proj1Compiler.c,133 :: 		delay_ms(50);          // Add a delay to prevent the loop from executing too quickly
+;Proj1Compiler.c,98 :: 		interruptInit();
+	CALL       _interruptInit+0
+;Proj1Compiler.c,102 :: 		while(1) {
+L_main2:
+;Proj1Compiler.c,104 :: 		PORTC = dispDigit[i];
+	MOVF       _i+0, 0
+	ADDLW      _dispDigit+0
+	MOVWF      FSR
+	MOVF       INDF+0, 0
+	MOVWF      PORTC+0
+;Proj1Compiler.c,105 :: 		PORTD = 0x01; // Select the first digit
+	MOVLW      1
+	MOVWF      PORTD+0
+;Proj1Compiler.c,106 :: 		delay_ms(50);
 	MOVLW      2
 	MOVWF      R11+0
 	MOVLW      69
 	MOVWF      R12+0
 	MOVLW      169
 	MOVWF      R13+0
-L_main24:
+L_main4:
 	DECFSZ     R13+0, 1
-	GOTO       L_main24
+	GOTO       L_main4
 	DECFSZ     R12+0, 1
-	GOTO       L_main24
+	GOTO       L_main4
 	DECFSZ     R11+0, 1
-	GOTO       L_main24
+	GOTO       L_main4
 	NOP
 	NOP
-;Proj1Compiler.c,134 :: 		}
-	GOTO       L_main22
-;Proj1Compiler.c,135 :: 		}
+;Proj1Compiler.c,107 :: 		PORTC = dispDigit[j];
+	MOVF       _j+0, 0
+	ADDLW      _dispDigit+0
+	MOVWF      FSR
+	MOVF       INDF+0, 0
+	MOVWF      PORTC+0
+;Proj1Compiler.c,108 :: 		PORTD = 0x02; // Select the second digit
+	MOVLW      2
+	MOVWF      PORTD+0
+;Proj1Compiler.c,109 :: 		delay_ms(50);
+	MOVLW      2
+	MOVWF      R11+0
+	MOVLW      69
+	MOVWF      R12+0
+	MOVLW      169
+	MOVWF      R13+0
+L_main5:
+	DECFSZ     R13+0, 1
+	GOTO       L_main5
+	DECFSZ     R12+0, 1
+	GOTO       L_main5
+	DECFSZ     R11+0, 1
+	GOTO       L_main5
+	NOP
+	NOP
+;Proj1Compiler.c,110 :: 		PORTC = dispDigit[k];
+	MOVF       _k+0, 0
+	ADDLW      _dispDigit+0
+	MOVWF      FSR
+	MOVF       INDF+0, 0
+	MOVWF      PORTC+0
+;Proj1Compiler.c,111 :: 		PORTD = 0x04; // Select the third digit
+	MOVLW      4
+	MOVWF      PORTD+0
+;Proj1Compiler.c,112 :: 		delay_ms(50);
+	MOVLW      2
+	MOVWF      R11+0
+	MOVLW      69
+	MOVWF      R12+0
+	MOVLW      169
+	MOVWF      R13+0
+L_main6:
+	DECFSZ     R13+0, 1
+	GOTO       L_main6
+	DECFSZ     R12+0, 1
+	GOTO       L_main6
+	DECFSZ     R11+0, 1
+	GOTO       L_main6
+	NOP
+	NOP
+;Proj1Compiler.c,113 :: 		PORTC = dispDigit[l];
+	MOVF       _l+0, 0
+	ADDLW      _dispDigit+0
+	MOVWF      FSR
+	MOVF       INDF+0, 0
+	MOVWF      PORTC+0
+;Proj1Compiler.c,114 :: 		PORTD = 0x08; // Select the fourth digit
+	MOVLW      8
+	MOVWF      PORTD+0
+;Proj1Compiler.c,115 :: 		delay_ms(50);
+	MOVLW      2
+	MOVWF      R11+0
+	MOVLW      69
+	MOVWF      R12+0
+	MOVLW      169
+	MOVWF      R13+0
+L_main7:
+	DECFSZ     R13+0, 1
+	GOTO       L_main7
+	DECFSZ     R12+0, 1
+	GOTO       L_main7
+	DECFSZ     R11+0, 1
+	GOTO       L_main7
+	NOP
+	NOP
+;Proj1Compiler.c,117 :: 		updateHoursTens();
+	CALL       _updateHoursTens+0
+;Proj1Compiler.c,118 :: 		updateHoursOnes();
+	CALL       _updateHoursOnes+0
+;Proj1Compiler.c,119 :: 		updateMinutesTens();
+	CALL       _updateMinutesTens+0
+;Proj1Compiler.c,120 :: 		updateMinutesOnes();
+	CALL       _updateMinutesOnes+0
+;Proj1Compiler.c,122 :: 		i = hoursTens;
+	MOVF       _hoursTens+0, 0
+	MOVWF      _i+0
+	MOVF       _hoursTens+1, 0
+	MOVWF      _i+1
+;Proj1Compiler.c,123 :: 		j = hoursOnes;
+	MOVF       _hoursOnes+0, 0
+	MOVWF      _j+0
+	MOVF       _hoursOnes+1, 0
+	MOVWF      _j+1
+;Proj1Compiler.c,124 :: 		k = minutesTens;
+	MOVF       _minutesTens+0, 0
+	MOVWF      _k+0
+	MOVF       _minutesTens+1, 0
+	MOVWF      _k+1
+;Proj1Compiler.c,125 :: 		l = minutesOnes;
+	MOVF       _minutesOnes+0, 0
+	MOVWF      _l+0
+	MOVF       _minutesOnes+1, 0
+	MOVWF      _l+1
+;Proj1Compiler.c,136 :: 		}
+	GOTO       L_main2
+;Proj1Compiler.c,137 :: 		}
 L_end_main:
 	GOTO       $+0
 ; end of _main

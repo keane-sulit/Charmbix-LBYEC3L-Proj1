@@ -12,123 +12,97 @@ RD3 = Ones digit of minutes
 DEFAULT Operation Mode: CLOCK
 
 */
-char count[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
 
-enum project_modes {
-    CLOCK,
-    STOPWATCH,
-    COUNTDOWN_TIMER
-};
+unsigned int i = 0;
+unsigned int j = 0;
+unsigned int k = 0;
+unsigned int l = 0;
 
-enum clock_modes {
-    CLOCK_12H,
-    CLOCK_24H,
-};
+unsigned int hoursTens = 0;
+unsigned int hoursOnes = 0;
+unsigned int minutesTens = 0;
+unsigned int minutesOnes = 0;
 
-int mode = CLOCK_12H;      // Default mode is 12h clock
+unsigned int seconds = 0;
 
-int hours = 12;
-int minutes = 59;
+unsigned int hours = 11;
+unsigned int minutes = 59;
 
-int i;
+unsigned char tmr0Count = 0; // Increments every 13.107ms
+
+char dispDigit[10] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90};
 
 void interrupt() {
-    if (INTCON.RBIF) {
-        INTCON.RBIF = 0;
-        if (PORTB.f7 == 0) {
-            if(mode == CLOCK_12H) {
-                mode = CLOCK_24H;
-            } else {
-                mode = CLOCK_12H;
-            }
-        }
-    }
+    INTCON.f7 = 0; // Disable Global Interrupt
+
+
+    // ISR for TMR0
+    if (INTCON.f2 == 1) {
+
+   }
+
+    INTCON.f7 = 1; // Enable Global Interrupt
 }
+
 void init() {
-    TRISB.f7 = 1; // PORTB is the control bus
     TRISC = 0x00; // PORTC is the data bus
     TRISD = 0x00; // PORTD is the address bus
 }
 
-void disp_dig(int dig, int seg) {
-    switch(seg){
-        case 1:
-            PORTD = 0x0E;
-            PORTC = count[dig];
-            delay_ms(10);
-            break;
-        case 2:
-            PORTD = 0x0D;
-            PORTC = count[dig];
-            delay_ms(10);
-            break;
-        case 3:
-            PORTD = 0x0B;
-            PORTC = count[dig];
-            delay_ms(10);
-            break;
-        case 4:
-            PORTD = 0x07;
-            PORTC = count[dig];
-            delay_ms(10);
-            break;
-    }
-}
+void interruptInit() {
+    INTCON.f7 = 1; // Enable Global Interrupt
+    INTCON.f6 = 1; // Enable Peripheral Interrupt
+    INTCON.f5 = 1; // Enable TMR0 Interrupt
+    OPTION_REG.f5 = 0; // Internal Instruction Cycle Clock (CLKO)
+    OPTION_REG.f4 = 0; // Increment on Low-to-High Transition on T0CKI Pin
+    OPTION_REG.f3 = 0; // Prescaler is assigned to the Timer0 module
+    // Prescaler Rate Select bits (111 = 1:256)
+    OPTION_REG.f2 = 1;
+    OPTION_REG.f1 = 1;
+    OPTION_REG.f0 = 1;
 
-void disp_time(int hours, int minutes) {
-    for (i = 0; i < 25; i++) {
-        disp_dig(hours / 10, 1);
-        disp_dig(hours % 10, 2);
-        disp_dig(minutes / 10, 3);
-        disp_dig(minutes % 10, 4);
-    }
-}
-
-void inc_time() {
-    if (minutes > 59) {
-        minutes = 0;
-        hours++;
-        if (mode == CLOCK_12H) {
-            if (hours > 12) {
-                hours = 1;
-            }
-        } else {                // mode == CLOCK_24H
-            if (hours > 23) {
-                hours = 0;
-            }
-        }
-    }
-    minutes++;
-}
-
-void modes() {
-    // Mode 1: CLOCK
-    //  - Toggle between 12h and 24h
-    //  - Stop / Resume
-    //  - Set time (up, down, left, right)
-    // Mode 2: STOPWATCH
-    //  - Start / Stop
-    //  - Pause / Resume
-    //  - Reset
-    // Mode 3: COUNTDOWN TIMER
-    //  - Set time (up, down, left, right)
-    //  - Pause / Resume
-    //  - Start / Stop
-    //  - Reset
+    TMR0 = ; // Load the TMR0 register
 }
 
 void main() {
     init();
-    disp_time(hours, minutes);
-    INTCON.GIE = 1;             // Enable global interrupts
-    INTCON.PEIE = 1;            // Enable peripheral interrupts
-    INTCON.RBIE = 1;            // Enable RB port change interrupts
-    INTCON.RBIF = 0;            // Clear RB port change interrupt flag
-    OPTION_REG.f7 = 1;          // Enable pull-up resistor for RB7
+    interruptInit();
 
-    
+
+
     while(1) {
-        inc_time();
-        disp_time(hours, minutes);
+
+        PORTC = dispDigit[i];
+        PORTD = 0x01; // Select the first digit
+        delay_ms(50);
+        PORTC = dispDigit[j];
+        PORTD = 0x02; // Select the second digit
+        delay_ms(50);
+        PORTC = dispDigit[k];
+        PORTD = 0x04; // Select the third digit
+        delay_ms(50);
+        PORTC = dispDigit[l];
+        PORTD = 0x08; // Select the fourth digit
+        delay_ms(50);
+
+        updateHoursTens();
+        updateHoursOnes();
+        updateMinutesTens();
+        updateMinutesOnes();
+
+        i = hoursTens;
+        j = hoursOnes;
+        k = minutesTens;
+        l = minutesOnes;
+
+        /* minutes++;
+        if (minutes == 60) {
+            minutes = 0;
+            hours++;
+            if (hours == 13) {
+                hours = 1;
+            }
+        }
+        delay_ms(1000); */
     }
 }
