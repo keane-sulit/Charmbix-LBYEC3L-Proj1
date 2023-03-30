@@ -18,27 +18,38 @@ unsigned int j = 0;
 unsigned int k = 0;
 unsigned int l = 0;
 
-unsigned int hoursTens = 0;
-unsigned int hoursOnes = 0;
-unsigned int minutesTens = 0;
-unsigned int minutesOnes = 0;
-
-unsigned int seconds = 0;
-
 unsigned int hours = 11;
 unsigned int minutes = 59;
 
-unsigned char tmr0Count = 0; // Increments every 13.107ms
-
+unsigned char timerCount = 0;
 char dispDigit[10] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90};
 
 void interrupt() {
     INTCON.f7 = 0; // Disable Global Interrupt
+   if (INTCON.f2 == 1) {
+        if (timerCount >= 5) {
+            timerCount = 0;
+        }
 
+        if (timerCount == 1) {
+            PORTD = 0x01; // Select the first digit
+            PORTC = dispDigit[i];
+        }
+        if (timerCount == 2) {
+            PORTD = 0x02; // Select the second digit
+            PORTC = dispDigit[j];
+        }
+        if (timerCount == 3) {
+            PORTD = 0x04; // Select the third digit
+            PORTC = dispDigit[k];
+        }
+        if (timerCount == 4) {
+            PORTD = 0x08; // Select the fourth digit
+            PORTC = dispDigit[l];
+        }
 
-    // ISR for TMR0
-    if (INTCON.f2 == 1) {
-
+        timerCount++;
+        INTCON.f2 = 0; // Clear TMR0 Interrupt Flag
    }
 
     INTCON.f7 = 1; // Enable Global Interrupt
@@ -61,41 +72,19 @@ void interruptInit() {
     OPTION_REG.f1 = 1;
     OPTION_REG.f0 = 1;
 
-    TMR0 = ; // Load the TMR0 register
+    TMR0 = 59; // Load the TMR0 register
 }
 
 void main() {
     init();
     interruptInit();
-
-
-
     while(1) {
+        i = hours/10; // Get the tens digit of hours
+        j = hours%10; // Get the ones digit of hours
+        k = minutes/10; // Get the tens digit of minutes
+        l = minutes%10; // Get the ones digit of minutes
 
-        PORTC = dispDigit[i];
-        PORTD = 0x01; // Select the first digit
-        delay_ms(50);
-        PORTC = dispDigit[j];
-        PORTD = 0x02; // Select the second digit
-        delay_ms(50);
-        PORTC = dispDigit[k];
-        PORTD = 0x04; // Select the third digit
-        delay_ms(50);
-        PORTC = dispDigit[l];
-        PORTD = 0x08; // Select the fourth digit
-        delay_ms(50);
-
-        updateHoursTens();
-        updateHoursOnes();
-        updateMinutesTens();
-        updateMinutesOnes();
-
-        i = hoursTens;
-        j = hoursOnes;
-        k = minutesTens;
-        l = minutesOnes;
-
-        /* minutes++;
+        minutes++;
         if (minutes == 60) {
             minutes = 0;
             hours++;
@@ -103,6 +92,6 @@ void main() {
                 hours = 1;
             }
         }
-        delay_ms(1000); */
+        delay_ms(1000);
     }
 }

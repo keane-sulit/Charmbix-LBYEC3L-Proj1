@@ -220,8 +220,6 @@ go_done_bit
 go_not_done
 go_not_done_bit
 hours
-hoursones
-hourstens
 i
 ibf
 ibf_bit
@@ -252,8 +250,6 @@ longint2double
 longword2double
 main
 minutes
-minutesones
-minutestens
 mul_16x16_s
 mul_16x16_u
 mul_32x32_fp
@@ -464,7 +460,6 @@ rx9d_bit
 s
 s_bit
 sdiv3232l
-seconds
 sen
 sen_bit
 setfdz32
@@ -528,8 +523,8 @@ t2ckps0_bit
 t2ckps1
 t2ckps1_bit
 t2con
+timercount
 tmr0
-tmr0count
 tmr0ie
 tmr0ie_bit
 tmr0if
@@ -650,10 +645,6 @@ txreg
 txsta
 ua
 ua_bit
-updatehoursones
-updatehourstens
-updateminutesones
-updateminutestens
 vdelay_advanced_ms
 vdelay_ms
 w
