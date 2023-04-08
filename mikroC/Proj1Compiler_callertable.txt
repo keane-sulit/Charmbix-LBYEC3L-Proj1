@@ -1,7 +1,14 @@
 main
 	__CC2DW
 		____DoICP
-	init
+	portInit
 	interruptInit
-	Div_16X16_U
+	updateHoursTens
+		Div_16X16_U
+	updateHoursOnes
+		Div_16X16_U
+	updateMinutesTens
+		Div_16X16_U
+	updateMinutesOnes
+		Div_16X16_U
 interrupt
