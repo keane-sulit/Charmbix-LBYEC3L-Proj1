@@ -12,7 +12,10 @@ RD3 = Ones digit of minutes
 
 DEFAULT Operation Mode: CLOCK
 RB0 = Clock Mode (24hr/12hr)
-RB4 = Mode (CLOCK/STOPWATCH/TIMER/ALARM)
+RB4 = Mode (CLOCK/STOPWATCH/TIMER/ALARM) WIP
+RB5 = Set/Adjust Time
+RB6 = Start/Stop Stopwatch
+RB7 = Pause/Resume Stopwatch
 */
 
 unsigned int i = 0;
