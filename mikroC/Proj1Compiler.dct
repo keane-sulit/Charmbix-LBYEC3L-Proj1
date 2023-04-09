@@ -124,6 +124,7 @@ cke_bit
 ckp
 ckp_bit
 clockmode
+clockstate
 cm0
 cm0_bit
 cm1

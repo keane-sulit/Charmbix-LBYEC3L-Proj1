@@ -1,5 +1,5 @@
 #line 1 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
-#line 18 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+#line 21 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
 unsigned int i = 0;
 unsigned int j = 0;
 unsigned int k = 0;
@@ -15,6 +15,7 @@ unsigned int seconds = 0;
 unsigned int clockMode = 0;
 unsigned int sysMode = 0;
 unsigned int stopWatchMode = 0;
+unsigned int clockState = 0;
 
 
 unsigned int hours = 11;
@@ -46,12 +47,16 @@ void interruptInit() {
 }
 
 void update() {
+ if ((clockMode == 0 || clockMode == 1) && clockState == 1) {
+ return;
+ } else if ((clockMode == 0 || clockMode == 1) && clockState == 0) {
  if (seconds > 59) {
  seconds = 0;
  minutes++;
  if (minutes > 59) {
  minutes = 0;
  hours++;
+ }
  }
  }
 }
@@ -215,25 +220,18 @@ void interrupt() {
  }
 
 
- if (INTCON.f3 == 1) {
+ if (INTCON.f0 == 1) {
 
  if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 && PORTB.f7 == 1) {
  delay_ms(50);
- sysMode++;
- if (sysMode > 3) {
- sysMode = 0;
- } else if (sysMode == 1) {
- if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 && PORTB.f7 == 1) {
- delay_ms(50);
- stopWatchMode++;
- if (stopWatchMode > 2) {
- stopWatchMode = 0;
- }
- };
- }
- }
 
- INTCON.f3 = 0;
+ clockState++;
+ if (clockState > 1) {
+ clockState = 0;
+ }
+ }
+#line 277 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+ INTCON.f0 = 0;
  }
  INTCON.f7 = 1;
 }

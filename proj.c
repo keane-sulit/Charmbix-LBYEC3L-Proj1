@@ -1,5 +1,5 @@
 /*
-Build Date: 2023.04.09 01:35 PM
+Build Date: 2023.04.09 04:41 PM
 This firmware is for the PIC16F877A microcontroller.
 It runs on a 20MHz crystal.
 It is a digital clock running on a multiplexed 7-segment display.
@@ -33,6 +33,7 @@ unsigned int seconds = 0;
 unsigned int clockMode = 0;  // 0 = 24hr, 1 = 12hr
 unsigned int sysMode = 0;    // 0 = CLOCK, 1 = STOPWATCH, 2 = TIMER, 3 = ALARM
 unsigned int stopWatchMode = 0;  // 0 = SET, 1 = RUN, 2 = PAUSE
+unsigned int clockState = 0;     // 0 = GO, 1 = PAUSE
 
 // Variables to adjust time
 unsigned int hours = 11;
@@ -64,14 +65,18 @@ void interruptInit() {
 }
 
 void update() {
-    if (seconds > 59) {
-        seconds = 0;
-        minutes++;
-        if (minutes > 59) {
-            minutes = 0;
-            hours++;
+    if ((clockMode == 0 || clockMode == 1) && clockState == 1) {
+        return;
+    } else if ((clockMode == 0 || clockMode == 1) && clockState == 0) {
+        if (seconds > 59) {
+            seconds = 0;
+            minutes++;
+            if (minutes > 59) {
+                minutes = 0;
+                hours++;
+            }
         }
-    }
+    }  // TODO: Add incrementing
 }
 
 void updateClockDisplay(int num, int segIndex) {
@@ -233,26 +238,43 @@ void interrupt() {
     }
 
     // WIP: ISR for RB Port Change Interrupt
-    if (INTCON.f3 == 1) {
-        // Debounce button
+    if (INTCON.f0 == 1) {
+        // Test if RB4 and RB0 are pressed
+        if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 && PORTB.f7 == 1) {
+            delay_ms(50);
+            // Pause time
+            clockState++;
+            if (clockState > 1) {
+                clockState = 0;
+            }
+        }
+
+        /* // Test if RB4 is pressed
+        if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 && PORTB.f7 == 1) {
+            delay_ms(50);
+            if (clockMode == 0) {
+                clockMode = 1;
+            } else {
+                clockMode = 0;
+            }
+        } */
+
+        /* // Debounce button
         if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 && PORTB.f7 == 1) {
             delay_ms(50);
             sysMode++;
             if (sysMode > 3) {
                 sysMode = 0;
             } else if (sysMode == 1) {
-                if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 &&
-                    PORTB.f7 == 1) {
-                    delay_ms(50);
-                    stopWatchMode++;
-                    if (stopWatchMode > 2) {
+                if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 && PORTB.f7
+        == 1) { delay_ms(50); stopWatchMode++; if (stopWatchMode > 2) {
                         stopWatchMode = 0;
                     }
                 };
             }
-        }
+        } */
 
-        INTCON.f3 = 0;  // Clear RB Port Change Interrupt Flag
+        INTCON.f0 = 0;  // Clear RB Port Change Interrupt Flag
     }
     INTCON.f7 = 1;  // Enable Global Interrupt
 }
