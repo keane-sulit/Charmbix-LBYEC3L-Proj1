@@ -1,5 +1,18 @@
 /*
-Build Date: 2023.04.09 04:41 PM
+Project: PIC16F877A Digital Clock
+Build Date: 2023.04.09 06:35 PM
+
+Build Status
+- [o] Clock Mode (24hr/12hr)
+- [x] Mode (CLOCK/STOPWATCH/TIMER/ALARM)
+- [F] Set/Adjust Time
+- [x] Start/Stop Stopwatch
+- [o] Pause/Resume Stopwatch
+- [x] Clock
+- [F] Stopwatch
+- [x] Timer
+- [x] Alarm
+
 This firmware is for the PIC16F877A microcontroller.
 It runs on a 20MHz crystal.
 It is a digital clock running on a multiplexed 7-segment display.
@@ -30,10 +43,13 @@ unsigned int minutesOnes = 0;
 
 unsigned int seconds = 0;
 
-unsigned int clockMode = 0;  // 0 = 24hr, 1 = 12hr
+unsigned int clockMode = 0;  // 0 = 24hr, 1 = 12hr, 2 = SET
 unsigned int sysMode = 0;    // 0 = CLOCK, 1 = STOPWATCH, 2 = TIMER, 3 = ALARM
 unsigned int stopWatchMode = 0;  // 0 = SET, 1 = RUN, 2 = PAUSE
-unsigned int clockState = 0;     // 0 = GO, 1 = PAUSE
+unsigned int clockState = 0;     // 0 = GO, 1 = PAUSE, 2 = SET
+unsigned int incrementFlag = 0;  // 0 = No, 1 = Yes
+unsigned int decrementFlag = 0;  // 0 = No, 1 = Yes
+unsigned int selectFlag = 0;     // 0 = No, 1 = Yes
 
 // Variables to adjust time
 unsigned int hours = 11;
@@ -65,8 +81,20 @@ void interruptInit() {
 }
 
 void update() {
-    if ((clockMode == 0 || clockMode == 1) && clockState == 1) {
-        return;
+    if ((clockMode == 0 || clockMode == 1) && clockState == 2) {
+        if (incrementFlag == 1) {
+            if (selectFlag == 0) {
+                hours++;
+            } else if (selectFlag == 1) {
+                minutes++;
+            }
+        } else if (decrementFlag == 1) {
+            if (selectFlag == 0) {
+                hours--;
+            } else if (selectFlag == 1) {
+                minutes--;
+            }
+        }
     } else if ((clockMode == 0 || clockMode == 1) && clockState == 0) {
         if (seconds > 59) {
             seconds = 0;
@@ -76,7 +104,9 @@ void update() {
                 hours++;
             }
         }
-    } // TODO: Add incrementing 
+    } else {
+        return;
+    }
 }
 
 void updateClockDisplay(int num, int segIndex) {
@@ -207,6 +237,26 @@ void displayStopWatchTime(int minutes, int seconds, int stopWatchMode) {
     }
 }
 
+void selectDigit() {
+    if (selectFlag == 0) {
+        PORTD = 0x01;  // Select the first digit
+        PORTC = dispDigit[0/* hours / 10 */];
+        delay_ms(1);
+    } else if (selectFlag == 1) {
+        PORTD = 0x02;  // Select the second digit
+        PORTC = dispDigit[0/* hours % 10 */];
+        delay_ms(1);
+    } else if (selectFlag == 2) {
+        PORTD = 0x04;  // Select the third digit
+        PORTC = dispDigit[0/* minutes / 10 */];
+        delay_ms(1);
+    } else if (selectFlag == 3) {
+        PORTD = 0x08;  // Select the fourth digit
+        PORTC = dispDigit[0/* minutes % 10 */];
+        delay_ms(1);
+    }
+}
+
 void interrupt() {
     INTCON.f7 = 0;  // Disable Global Interrupt
 
@@ -239,15 +289,45 @@ void interrupt() {
 
     // WIP: ISR for RB Port Change Interrupt
     if (INTCON.f0 == 1) {
-        // Test if RB4 and RB0 are pressed
+        // Test if RB4 is pressed
         if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 && PORTB.f7 == 1) {
             delay_ms(50);
             // Pause time
             clockState++;
             if (clockState > 1) {
                 clockState = 0;
+                
             }
         }
+
+        // FAILING!
+
+        // Check if RB5 is pressed, if so, select digit through
+        // selectFlag
+        if (PORTB.f4 == 1 && PORTB.f5 == 0 && PORTB.f6 == 1 && PORTB.f7 == 1) {
+            delay_ms(50);
+            selectFlag++;
+            if (selectFlag > 3) {
+                selectFlag = 0;
+            }
+            selectDigit();
+        }
+        // Enter SET mode if RB7 is pressed while RB4 is pressed
+        if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 && PORTB.f7 == 0) {
+            delay_ms(50);
+            if (clockMode != 2) {
+                clockMode = 2;
+                incrementFlag = 0;
+                decrementFlag = 0;
+                selectFlag = 0;
+            }
+            // Press RB7 again to exit SET mode
+            else {
+                clockMode = 0;
+            }
+        }
+
+        // Test if RB5 is pressed
 
         /* // Test if RB4 is pressed
         if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 && PORTB.f7 == 1) {

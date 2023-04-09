@@ -167,6 +167,7 @@ data_address
 data_address_bit
 dc
 dc_bit
+decrementflag
 delay_100ms
 delay_10ms
 delay_10us
@@ -232,6 +233,14 @@ hours
 hoursones
 hourstens
 i
+i2c_data
+i2c_data_bit
+i2c_read
+i2c_read_bit
+i2c_start_
+i2c_start__bit
+i2c_stop_
+i2c_stop__bit
 ibf
 ibf_bit
 ibf_trise_bit
@@ -240,6 +249,7 @@ ibov_bit
 ibov_trise_bit
 ics_auto
 ics_off
+incrementflag
 indf
 int2double
 intcon
@@ -340,7 +350,6 @@ pie1
 pie2
 pir1
 pir2
-port_to_tris_offset
 porta
 portb
 portc
@@ -489,6 +498,8 @@ s
 s_bit
 sdiv3232l
 seconds
+selectdigit
+selectflag
 sen
 sen_bit
 setfdz32

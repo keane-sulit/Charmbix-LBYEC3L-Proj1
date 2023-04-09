@@ -1,5 +1,5 @@
 #line 1 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
-#line 21 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+#line 34 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
 unsigned int i = 0;
 unsigned int j = 0;
 unsigned int k = 0;
@@ -16,6 +16,9 @@ unsigned int clockMode = 0;
 unsigned int sysMode = 0;
 unsigned int stopWatchMode = 0;
 unsigned int clockState = 0;
+unsigned int incrementFlag = 0;
+unsigned int decrementFlag = 0;
+unsigned int selectFlag = 0;
 
 
 unsigned int hours = 11;
@@ -47,8 +50,20 @@ void interruptInit() {
 }
 
 void update() {
- if ((clockMode == 0 || clockMode == 1) && clockState == 1) {
- return;
+ if ((clockMode == 0 || clockMode == 1) && clockState == 2) {
+ if (incrementFlag == 1) {
+ if (selectFlag == 0) {
+ hours++;
+ } else if (selectFlag == 1) {
+ minutes++;
+ }
+ } else if (decrementFlag == 1) {
+ if (selectFlag == 0) {
+ hours--;
+ } else if (selectFlag == 1) {
+ minutes--;
+ }
+ }
  } else if ((clockMode == 0 || clockMode == 1) && clockState == 0) {
  if (seconds > 59) {
  seconds = 0;
@@ -58,6 +73,8 @@ void update() {
  hours++;
  }
  }
+ } else {
+ return;
  }
 }
 
@@ -189,6 +206,26 @@ void displayStopWatchTime(int minutes, int seconds, int stopWatchMode) {
  }
 }
 
+void selectDigit() {
+ if (selectFlag == 0) {
+ PORTD = 0x01;
+ PORTC = dispDigit[0 ];
+ delay_ms(1);
+ } else if (selectFlag == 1) {
+ PORTD = 0x02;
+ PORTC = dispDigit[0 ];
+ delay_ms(1);
+ } else if (selectFlag == 2) {
+ PORTD = 0x04;
+ PORTC = dispDigit[0 ];
+ delay_ms(1);
+ } else if (selectFlag == 3) {
+ PORTD = 0x08;
+ PORTC = dispDigit[0 ];
+ delay_ms(1);
+ }
+}
+
 void interrupt() {
  INTCON.f7 = 0;
 
@@ -228,9 +265,37 @@ void interrupt() {
  clockState++;
  if (clockState > 1) {
  clockState = 0;
+
  }
  }
-#line 277 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+
+
+
+
+
+ if (PORTB.f4 == 1 && PORTB.f5 == 0 && PORTB.f6 == 1 && PORTB.f7 == 1) {
+ delay_ms(50);
+ selectFlag++;
+ if (selectFlag > 3) {
+ selectFlag = 0;
+ }
+ selectDigit();
+ }
+
+ if (PORTB.f4 == 0 && PORTB.f5 == 1 && PORTB.f6 == 1 && PORTB.f7 == 0) {
+ delay_ms(50);
+ if (clockMode != 2) {
+ clockMode = 2;
+ incrementFlag = 0;
+ decrementFlag = 0;
+ selectFlag = 0;
+ }
+
+ else {
+ clockMode = 0;
+ }
+ }
+#line 357 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
  INTCON.f0 = 0;
  }
  INTCON.f7 = 1;

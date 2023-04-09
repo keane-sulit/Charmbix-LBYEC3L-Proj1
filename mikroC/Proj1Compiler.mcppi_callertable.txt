@@ -1,0 +1,23 @@
+main
+	__CC2DW
+		____DoICP
+	portInit
+	interruptInit
+	displayClockTime
+		toggleClockTwelve
+			Div_16x16_S
+				Div_16x16_S_L
+			updateClockDisplay
+			abs
+		toggleClockTwentyFour
+			Div_16x16_S
+				Div_16x16_S_L
+			updateClockDisplay
+	displayStopWatchTime
+		stopWatch
+			Div_16x16_S
+				Div_16x16_S_L
+			updateStopWatchDisplay
+interrupt
+	update
+	selectDigit
