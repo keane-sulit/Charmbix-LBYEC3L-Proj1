@@ -3,12 +3,20 @@ main
 		____DoICP
 	portInit
 	interruptInit
-	updateHoursTens
-		Div_16X16_U
-	updateHoursOnes
-		Div_16X16_U
-	updateMinutesTens
-		Div_16X16_U
-	updateMinutesOnes
-		Div_16X16_U
+	displayClockTime
+		toggleClockTwelve
+			Div_16x16_S
+				Div_16x16_S_L
+			updateClockDisplay
+			abs
+		toggleClockTwentyFour
+			Div_16x16_S
+				Div_16x16_S_L
+			updateClockDisplay
+	displayStopWatchTime
+		stopWatch
+			Div_16x16_S
+				Div_16x16_S_L
+			updateStopWatchDisplay
 interrupt
+	update

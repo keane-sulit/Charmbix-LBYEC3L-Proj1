@@ -41,12 +41,16 @@ Count=0
 [PLDS]
 Count=0
 [Useses]
-Count=0
+File0=C_Stdlib
+File1=C_Type
+Count=2
 [EXPANDED_NODES]
 0=Proj1Compiler.mcppi
 Count=1
 [LIB_EXPANDED_NODES]
-Count=1
+0=mikroE Libraries
+1=System Libraries
+Count=2
 [PROGRAMMER_TYPE]
 Value=mikroE mikroProg
 [CODEGRIP_OPTIONS]
