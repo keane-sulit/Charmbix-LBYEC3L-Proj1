@@ -57,6 +57,7 @@ bclif
 bclif_bit
 bf
 bf_bit
+blink
 boot16_delay_5ms
 brgh
 brgh_bit
@@ -182,9 +183,9 @@ delay_5ms
 delay_80us
 delay_8ms
 delay_cyc
+digitflag
 dispdigit
 displayclocktime
-displaystopwatchtime
 div
 div_16x16_s
 div_16x16_s_l
@@ -498,11 +499,12 @@ s
 s_bit
 sdiv3232l
 seconds
-selectdigit
 selectflag
 sen
 sen_bit
+set
 setfdz32
+setflag
 setfov32
 setfun32
 setiov3224
@@ -540,6 +542,9 @@ stopwatch
 stopwatchmode
 sub_32x32_fp
 swap
+swminutes
+swseconds
+swstate
 sync
 sync_bit
 sysmode
@@ -567,6 +572,8 @@ t2ckps0_bit
 t2ckps1
 t2ckps1_bit
 t2con
+timer
+timermode
 tmr0
 tmr0count
 tmr0ie
@@ -590,6 +597,9 @@ tmr2if
 tmr2if_bit
 tmr2on
 tmr2on_bit
+tmrminutes
+tmrseconds
+tmrstate
 toggleclocktwelve
 toggleclocktwentyfour
 tolower
@@ -697,6 +707,7 @@ uldiv
 update
 updateclockdisplay
 updatestopwatchdisplay
+updatetimerdisplay
 vdelay_advanced_ms
 vdelay_ms
 w

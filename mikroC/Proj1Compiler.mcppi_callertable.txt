@@ -13,11 +13,15 @@ main
 			Div_16x16_S
 				Div_16x16_S_L
 			updateClockDisplay
-	displayStopWatchTime
-		stopWatch
-			Div_16x16_S
-				Div_16x16_S_L
-			updateStopWatchDisplay
+	stopWatch
+		Div_16x16_S
+			Div_16x16_S_L
+		updateStopWatchDisplay
+	timer
+		Div_16x16_S
+			Div_16x16_S_L
+		updateTimerDisplay
+	blink
 interrupt
 	update
-	selectDigit
+	Div_16x16_U

@@ -63,4 +63,5 @@ File0=C_Stdlib
 File1=C_Type
 [EXPANDED NODES]
 Node1=Sources
-Count=1
+Node2=Output Files
+Count=2
