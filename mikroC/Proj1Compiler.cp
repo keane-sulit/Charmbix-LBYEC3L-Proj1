@@ -1,10 +1,10 @@
 #line 1 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
-#line 36 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+#line 38 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
 unsigned char tmr0Count = 0;
 
 
 unsigned int hours = 12;
-unsigned int minutes = 58;
+unsigned int minutes = 59;
 unsigned int seconds = 0;
 unsigned int swSeconds = 0;
 unsigned int swMinutes = 0;
@@ -98,7 +98,7 @@ void update() {
 
  return;
  }
-#line 142 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+
 }
 
 
@@ -385,7 +385,8 @@ void timer(int tmrMinutes, int tmrSeconds) {
  updateTimerDisplay(tmrSeconds % 10, 3);
  }
 }
-#line 445 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+
+
 void main() {
  portInit();
  interruptInit();
@@ -397,7 +398,6 @@ void main() {
  stopWatch(swMinutes, swSeconds);
  } else if (sysMode == 3) {
  timer(tmrMinutes, tmrSeconds);
-
  }
  }
 }

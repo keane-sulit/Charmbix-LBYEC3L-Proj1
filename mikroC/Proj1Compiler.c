@@ -1,8 +1,8 @@
 /*
 Project: PIC16F877A Digital Clock using Multiplexed 7-Segment Displays
 
-Build Date: 2023.04.16 10:50 PM
-Final Build Version: 1.0.1
+Build Date: 2023.04.16 11:11 PM
+Final Build Version: 1.1.3
 
 Fixes:
 1.0.0 - Initial build
@@ -10,6 +10,7 @@ Fixes:
 1.1.0 - Updated TMR0 config for hardware testing
 1.1.1 - Removed unused variables
 1.1.2 - Adjusted code readability
+1.1.3 - Set 12:59:00 as the default time
 
 Build Status
 - [o] Clock Mode (24hr/12hr)
@@ -38,7 +39,7 @@ unsigned char tmr0Count = 0;  // Increments every 13.107ms
 
 // Time variables
 unsigned int hours = 12;
-unsigned int minutes = 58;
+unsigned int minutes = 59;
 unsigned int seconds = 0;
 unsigned int swSeconds = 0;   // Stopwatch seconds
 unsigned int swMinutes = 0;   // Stopwatch minutes
