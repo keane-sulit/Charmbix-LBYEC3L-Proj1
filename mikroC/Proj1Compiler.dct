@@ -124,6 +124,7 @@ cke
 cke_bit
 ckp
 ckp_bit
+clock
 clockmode
 clockstate
 cm0
@@ -168,7 +169,6 @@ data_address
 data_address_bit
 dc
 dc_bit
-decrementflag
 delay_100ms
 delay_10ms
 delay_10us
@@ -185,7 +185,6 @@ delay_8ms
 delay_cyc
 digitflag
 dispdigit
-displayclocktime
 div
 div_16x16_s
 div_16x16_s_l
@@ -499,12 +498,9 @@ s
 s_bit
 sdiv3232l
 seconds
-selectflag
 sen
 sen_bit
-set
 setfdz32
-setflag
 setfov32
 setfun32
 setiov3224

@@ -1,17 +1,19 @@
 /*
-Project: PIC16F877A Digital Clock
-Build Date: 2023.04.16 01:30 AM
+Project: PIC16F877A Digital Clock using Multiplexed 7-Segment Displays
+
+Build Date: 2023.04.16 04:09 PM
+Final Build Version: 1.0.0
 
 Build Status
 - [o] Clock Mode (24hr/12hr)
-- [P] Mode (CLOCK/STOPWATCH/TIMER/ALARM)
-- [P] Set/Adjust Time
+- [o] Mode (CLOCK / STOPWATCH / TIMER / ALARM (NI) ), NI = Not Implemented
+- [o] Set/Adjust Time
 - [o] Start/Stop Stopwatch
 - [o] Pause/Resume Stopwatch
 - [o] Clock
 - [o] Stopwatch
 - [o] Timer
-- [x] Alarm
+- [x] Alarm (Not implemented since Proteus lags when simulating)
 
 This firmware is for the PIC16F877A microcontroller.
 It runs on a 20MHz crystal.
@@ -24,22 +26,22 @@ RD2 = Tens digit of minutes
 RD3 = Ones digit of minutes
 */
 
-unsigned int i = 0;         // General purpose counter      unused
-unsigned int j = 0;         // General purpose counter      unused
-unsigned int k = 0;         // General purpose counter      unused
-unsigned int l = 0;         // General purpose counter      unused
+unsigned int i = 0;  // General purpose counter      unused
+unsigned int j = 0;  // General purpose counter      unused
+unsigned int k = 0;  // General purpose counter      unused
+unsigned int l = 0;  // General purpose counter      unused
 
-unsigned int hoursTens = 0;     // 0 = Not set, 1 = Set     unused
-unsigned int hoursOnes = 0;     // 0 = Not set, 1 = Set     unused
-unsigned int minutesTens = 0;   // 0 = Not set, 1 = Set     unused
-unsigned int minutesOnes = 0;   // 0 = Not set, 1 = Set     unused
+unsigned int hoursTens = 0;    // 0 = Not set, 1 = Set     unused
+unsigned int hoursOnes = 0;    // 0 = Not set, 1 = Set     unused
+unsigned int minutesTens = 0;  // 0 = Not set, 1 = Set     unused
+unsigned int minutesOnes = 0;  // 0 = Not set, 1 = Set     unused
 
 // Internal clock variables
 unsigned char tmr0Count = 0;  // Increments every 13.107ms
 
 // Time variables
 unsigned int hours = 12;
-unsigned int minutes = 50;
+unsigned int minutes = 58;
 unsigned int seconds = 0;
 unsigned int swSeconds = 0;   // Stopwatch seconds
 unsigned int swMinutes = 0;   // Stopwatch minutes
@@ -47,23 +49,23 @@ unsigned int tmrSeconds = 0;  // Timer seconds
 unsigned int tmrMinutes = 2;  // Timer minutes
 
 // Modes
-unsigned int sysMode = 0;    // 0 = 12H CLOCK, 1 = 24H CLOCK, 2 = STOPWATCH, 3 = TIMER, 4 = ALARM
-unsigned int clockMode = 0;  // 0 = 24hr, 1 = 12hr
+unsigned int sysMode = 0;        // 0 = 12H CLOCK, 1 = 24H CLOCK, 2 = STOPWATCH, 3 = TIMER, 4 = ALARM
+unsigned int clockMode = 0;      // 0 = 24hr, 1 = 12hr
 unsigned int stopWatchMode = 0;  // 0 = Default
 unsigned int timerMode = 0;      // 0 = Default
 
-// States for clock, stopwatch, timer
+// Flags for the states of the clock, stopwatch, and timer
 unsigned int clockState = 0;  // 0 = GO, 1 = PAUSE
 unsigned int swState = 0;     // 0 = PAUSE, 1 = RUN
 unsigned int tmrState = 0;    // 0 = PAUSE, 1 = RUN
 
-unsigned int setFlag = 0;        // 0 = No, 1 = Yes
-unsigned int digitFlag = 0;      // 0 = None, 1 = hours, 2 = minutes
+// Flags for setting time
+unsigned int digitFlag = 0;  // 0 = None, 1 = hours, 2 = minutes
 
+// Flags for incrementing time
 unsigned int incrementFlag = 0;  // 0 = No, 1 = Yes
-unsigned int decrementFlag = 0;  // 0 = No, 1 = Yes     unused
-unsigned int selectFlag = 0;     // 0 = No, 1 = Yes     unused
 
+// 7-segment display variables
 char dispDigit[10] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99,
                       0x92, 0x82, 0xF8, 0x80, 0x90};
 
@@ -81,14 +83,19 @@ void interruptInit() {
     OPTION_REG.f5 = 0;  // Internal Instruction Cycle Clock (CLKO)
     OPTION_REG.f4 = 0;  // Increment on Low-to-High Transition on T0CKI Pin
     OPTION_REG.f3 = 0;  // Prescaler is assigned to the Timer0 module
+
     // Prescaler Rate Select bits (111 = 1:256)
+    // Change to 100 = 1:16 when performing simulation testing
     OPTION_REG.f2 = 1;
     OPTION_REG.f1 = 0;
     OPTION_REG.f0 = 0;
 }
 
+// Function to update the time variables
 void update() {
     // Clock continuously updates regardless of mode
+    // TODO: Add condition - sysMode != 4
+    // Update clock
     seconds++;
     if (seconds > 59) {  // CLOCK
         seconds = 0;
@@ -98,7 +105,7 @@ void update() {
             hours++;
         }
     }
-    
+
     // Update stopwatch
     if (sysMode == 2 && swState == 0) {
         swSeconds++;
@@ -109,8 +116,8 @@ void update() {
     } else if (sysMode == 2 && swState == 1) {
         // Do nothing since clock is paused.
         return;
-    } 
-    
+    }
+
     // Update timer
     if (sysMode == 3 && tmrState == 0) {
         if (tmrSeconds > 0) {
@@ -125,16 +132,14 @@ void update() {
         // Do nothing since clock is paused.
         return;
     }
-    
-    // TODO: Update alarm
-    if (sysMode == 4) {  // ALARM
+
+    // SOON: Update alarm
+    /* if (sysMode == 4) {  // ALARM
 
     } else {
         // Do nothing since clock is paused.
         return;
-    }
-    
-
+    } */
 }
 
 void interrupt() {
@@ -144,35 +149,36 @@ void interrupt() {
     if (INTCON.f2 == 1) {
         if (tmr0Count == 10) {  // Change to 76 after simulation testing
             tmr0Count = 0;
-            // Update time after 1 minute
-            update();
+            update();           // Update time variables
         } else {
             tmr0Count++;
         }
-        INTCON.f2 = 0;  // Clear TMR0 Interrupt Flag
+        INTCON.f2 = 0;          // Clear TMR0 Interrupt Flag
     }
 
     // ISR for RB0 External Interrupt
     if (INTCON.f1 == 1) {
-        // TODO: Add alarm mode in main menu
+
+        // Mode button
         if (PORTB.f0 == 0) {
-            delay_ms(50);
+            delay_ms(50);           // Debounce
         }
-        // Toggle between 12H and 24H clock
-        sysMode++;
-        if (sysMode == 1) {  // 24H clock
-            clockMode = 1;
-            clockState = 0;
-        } else if (sysMode == 2) {  // Stopwatch
-            stopWatchMode = 0;
-            swState = 1;  // Pause
-        } else if (sysMode == 3) {
-            timerMode = 0;
+
+        // Loop through system modes
+        sysMode++;                  // Increment mode
+        if (sysMode == 1) {         // 24H CLOCK
+            clockMode = 1;          // 24H
+            clockState = 0;         // GO
+        } else if (sysMode == 2) {  // STOPWATCH
+            stopWatchMode = 0;      // Default
+            swState = 1;            // Pause
+        } else if (sysMode == 3) {  // TIMER
+            timerMode = 0;          // Default
             tmrState = 1;           // Pause
-        } else if (sysMode == 4) {  // TEMPORARY
-            sysMode = 0;            // Reset to 12H clock
-            clockMode = 0;
-            clockState = 0;
+        } else if (sysMode == 4) {  // 12H CLOCK
+            sysMode = 0;            // Reset to 12H
+            clockMode = 0;          // 12H
+            clockState = 0;         // GO
         }
 
         INTCON.f1 = 0;  // Clear RB0 External Interrupt Flag
@@ -180,6 +186,8 @@ void interrupt() {
 
     // TODO: ISR for RB Port Change Interrupt
     if (INTCON.f0 == 1) {
+
+        // PAUSE/GO button: Pause or resume system
         if (PORTB.f4 == 0) {
             delay_ms(50);
             // Clock pause
@@ -207,21 +215,9 @@ void interrupt() {
                 }
             }
         }
-
-        // TODO: SET: Select digit to set
+        
+        // RESET button: Reset time variables
         if (PORTB.f5 == 0) {
-            delay_ms(50);
-            // Digit set select
-            if (digitFlag == 0) {
-                digitFlag = 1;
-            } else if (digitFlag == 1) {
-                digitFlag = 2;
-            } else if (digitFlag == 2) {
-                digitFlag = 0;
-            }
-        }
-
-        if (PORTB.f6 == 0) {
             delay_ms(50);
             // Clock reset
             if (sysMode == 0 || sysMode == 1) {
@@ -239,11 +235,22 @@ void interrupt() {
                 tmrSeconds = 0;
                 tmrMinutes = 0;
             }
-        
         }
 
-        // TODO: SET: Increment digit
-        // FIXME: Stack underflow
+        // SET button: Select digit to set
+        if (PORTB.f6 == 0) {
+            delay_ms(50);
+            // Digit set select
+            if (digitFlag == 0) {
+                digitFlag = 1;
+            } else if (digitFlag == 1) {
+                digitFlag = 2;
+            } else if (digitFlag == 2) {
+                digitFlag = 0;
+            }
+        }
+
+        // INCREMENT button: Increment time variables
         if (PORTB.f7 == 0) {
             delay_ms(50);
             // Clock set increment
@@ -252,12 +259,7 @@ void interrupt() {
             } else if (digitFlag == 2) {
                 minutes = (minutes + 1) % 60;
             }
-            // Stopwatch set increment
-            if (digitFlag == 1 && stopWatchMode == 0) {
-                swMinutes = (swMinutes + 1) % 60;
-            } else if (digitFlag == 2 && sysMode == 2) {
-                swSeconds = (swSeconds + 1) % 60;
-            }
+
             // Timer set increment
             if (digitFlag == 1 && timerMode == 0) {
                 tmrMinutes = (tmrMinutes + 1) % 60;
@@ -272,6 +274,7 @@ void interrupt() {
     INTCON.f7 = 1;  // Enable Global Interrupt
 }
 
+// Function to update the clock display
 void updateClockDisplay(int num, int segIndex) {
     switch (segIndex) {
         case 0:
@@ -297,6 +300,7 @@ void updateClockDisplay(int num, int segIndex) {
     }
 }
 
+// Function to toggle 12H clock display
 void toggleClockTwelve(int hours, int minutes) {
     if (0 < hours && hours < 13) {
         updateClockDisplay(hours / 10, 0);
@@ -311,6 +315,7 @@ void toggleClockTwelve(int hours, int minutes) {
     }
 }
 
+// Function to toggle 24H clock display
 void toggleClockTwentyFour(int hours, int minutes) {
     if (hours < 24) {
         updateClockDisplay(hours / 10, 0);
@@ -325,7 +330,8 @@ void toggleClockTwentyFour(int hours, int minutes) {
     }
 }
 
-void displayClockTime(int hours, int minutes, int clockMode) {
+// Function to display clock time
+void clock(int hours, int minutes, int clockMode) {
     switch (clockMode) {
         case 0:
             toggleClockTwelve(hours, minutes);
@@ -336,6 +342,7 @@ void displayClockTime(int hours, int minutes, int clockMode) {
     }
 }
 
+// Function to update the stopwatch display
 void updateStopWatchDisplay(int num, int segIndex) {
     switch (segIndex) {
         case 0:
@@ -361,6 +368,7 @@ void updateStopWatchDisplay(int num, int segIndex) {
     }
 }
 
+// Function to display stopwatch time
 void stopWatch(int swMinutes, int swSeconds) {
     // 00:00 - 99:59
     if (swMinutes < 100) {
@@ -376,6 +384,7 @@ void stopWatch(int swMinutes, int swSeconds) {
     }
 }
 
+// Function to update the timer display
 void updateTimerDisplay(int num, int segIndex) {
     switch (segIndex) {
         case 0:
@@ -401,6 +410,7 @@ void updateTimerDisplay(int num, int segIndex) {
     }
 }
 
+// Function to display timer time
 void timer(int tmrMinutes, int tmrSeconds) {
     // 99:59 - 00:00
     if (tmrMinutes < 100) {
@@ -416,15 +426,7 @@ void timer(int tmrMinutes, int tmrSeconds) {
     }
 }
 
-void set() {
-    // Set time
-    hoursTens = hours / 10;
-    hoursOnes = hours % 10;
-    minutesTens = minutes / 10;
-    minutesOnes = minutes % 10;
-}
-
-//FIXME: Fix this function since it recurses infinitely
+// FIXME: Fix this function since it recurses infinitely
 void blink() {
     if (tmrSeconds == 0 && tmrMinutes == 0) {
         PORTD = 0x00;
@@ -437,17 +439,17 @@ void blink() {
 }
 
 void main() {
-    portInit();
-    interruptInit();
-
+    portInit();                 // Initialize the ports
+    interruptInit();            // Initialize the interrupts
+    // Infinite loop for the program
     while (1) {
         if (sysMode == 0 || sysMode == 1) {
-            displayClockTime(hours, minutes, clockMode);
+            clock(hours, minutes, clockMode);
         } else if (sysMode == 2) {
             stopWatch(swMinutes, swSeconds);
         } else if (sysMode == 3) {
             timer(tmrMinutes, tmrSeconds);
             blink();
-        } // TODO: Add a case for the alarm
+        }  // TODO: Add a case for the alarm
     }
 }

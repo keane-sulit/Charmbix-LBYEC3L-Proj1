@@ -1,5 +1,5 @@
 #line 1 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
-#line 27 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+#line 29 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
 unsigned int i = 0;
 unsigned int j = 0;
 unsigned int k = 0;
@@ -10,32 +10,35 @@ unsigned int hoursOnes = 0;
 unsigned int minutesTens = 0;
 unsigned int minutesOnes = 0;
 
+
+unsigned char tmr0Count = 0;
+
+
+unsigned int hours = 12;
+unsigned int minutes = 58;
 unsigned int seconds = 0;
 unsigned int swSeconds = 0;
 unsigned int swMinutes = 0;
 unsigned int tmrSeconds = 0;
 unsigned int tmrMinutes = 2;
 
+
 unsigned int sysMode = 0;
 unsigned int clockMode = 0;
+unsigned int stopWatchMode = 0;
+unsigned int timerMode = 0;
+
 
 unsigned int clockState = 0;
 unsigned int swState = 0;
 unsigned int tmrState = 0;
 
-unsigned int setFlag = 0;
+
 unsigned int digitFlag = 0;
-unsigned int stopWatchMode = 0;
-unsigned int timerMode = 0;
+
+
 unsigned int incrementFlag = 0;
-unsigned int decrementFlag = 0;
-unsigned int selectFlag = 0;
 
-
-unsigned int hours = 12;
-unsigned int minutes = 50;
-
-unsigned char tmr0Count = 0;
 
 char dispDigit[10] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99,
  0x92, 0x82, 0xF8, 0x80, 0x90};
@@ -55,12 +58,18 @@ void interruptInit() {
  OPTION_REG.f4 = 0;
  OPTION_REG.f3 = 0;
 
+
+
  OPTION_REG.f2 = 1;
  OPTION_REG.f1 = 0;
  OPTION_REG.f0 = 0;
 }
 
+
 void update() {
+
+
+
  seconds++;
  if (seconds > 59) {
  seconds = 0;
@@ -70,6 +79,7 @@ void update() {
  hours++;
  }
  }
+
 
  if (sysMode == 2 && swState == 0) {
  swSeconds++;
@@ -81,6 +91,7 @@ void update() {
 
  return;
  }
+
 
  if (sysMode == 3 && tmrState == 0) {
  if (tmrSeconds > 0) {
@@ -95,15 +106,7 @@ void update() {
 
  return;
  }
-
- if (sysMode == 4) {
-
- } else {
-
- return;
- }
-
-
+#line 143 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
 }
 
 void interrupt() {
@@ -113,7 +116,6 @@ void interrupt() {
  if (INTCON.f2 == 1) {
  if (tmr0Count == 10) {
  tmr0Count = 0;
-
  update();
  } else {
  tmr0Count++;
@@ -124,9 +126,11 @@ void interrupt() {
 
  if (INTCON.f1 == 1) {
 
+
  if (PORTB.f0 == 0) {
  delay_ms(50);
  }
+
 
  sysMode++;
  if (sysMode == 1) {
@@ -149,6 +153,7 @@ void interrupt() {
 
 
  if (INTCON.f0 == 1) {
+
 
  if (PORTB.f4 == 0) {
  delay_ms(50);
@@ -182,19 +187,6 @@ void interrupt() {
  if (PORTB.f5 == 0) {
  delay_ms(50);
 
- if (digitFlag == 0) {
- digitFlag = 1;
- } else if (digitFlag == 1) {
- digitFlag = 2;
- } else if (digitFlag == 2) {
- digitFlag = 0;
- }
- }
-
-
- if (PORTB.f6 == 0) {
- delay_ms(50);
-
  if (sysMode == 0 || sysMode == 1) {
  seconds = 0;
  minutes = 0;
@@ -210,7 +202,19 @@ void interrupt() {
  tmrSeconds = 0;
  tmrMinutes = 0;
  }
+ }
 
+
+ if (PORTB.f6 == 0) {
+ delay_ms(50);
+
+ if (digitFlag == 0) {
+ digitFlag = 1;
+ } else if (digitFlag == 1) {
+ digitFlag = 2;
+ } else if (digitFlag == 2) {
+ digitFlag = 0;
+ }
  }
 
 
@@ -223,12 +227,12 @@ void interrupt() {
  minutes = (minutes + 1) % 60;
  }
 
- if (digitFlag == 1 && stopWatchMode == 0) {
- swMinutes = (swMinutes + 1) % 60;
- } else if (digitFlag == 2 && sysMode == 2) {
- swSeconds = (swSeconds + 1) % 60;
+
+ if (digitFlag == 1 && timerMode == 0) {
+ tmrMinutes = (tmrMinutes + 1) % 60;
+ } else if (digitFlag == 2 && sysMode == 3) {
+ tmrSeconds = (tmrSeconds + 1) % 60;
  }
-#line 261 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
  }
 
  INTCON.f0 = 0;
@@ -236,6 +240,7 @@ void interrupt() {
 
  INTCON.f7 = 1;
 }
+
 
 void updateClockDisplay(int num, int segIndex) {
  switch (segIndex) {
@@ -262,6 +267,7 @@ void updateClockDisplay(int num, int segIndex) {
  }
 }
 
+
 void toggleClockTwelve(int hours, int minutes) {
  if (0 < hours && hours < 13) {
  updateClockDisplay(hours / 10, 0);
@@ -275,6 +281,7 @@ void toggleClockTwelve(int hours, int minutes) {
  updateClockDisplay(minutes % 10, 3);
  }
 }
+
 
 void toggleClockTwentyFour(int hours, int minutes) {
  if (hours < 24) {
@@ -290,7 +297,8 @@ void toggleClockTwentyFour(int hours, int minutes) {
  }
 }
 
-void displayClockTime(int hours, int minutes, int clockMode) {
+
+void clock(int hours, int minutes, int clockMode) {
  switch (clockMode) {
  case 0:
  toggleClockTwelve(hours, minutes);
@@ -300,6 +308,7 @@ void displayClockTime(int hours, int minutes, int clockMode) {
  break;
  }
 }
+
 
 void updateStopWatchDisplay(int num, int segIndex) {
  switch (segIndex) {
@@ -326,6 +335,7 @@ void updateStopWatchDisplay(int num, int segIndex) {
  }
 }
 
+
 void stopWatch(int swMinutes, int swSeconds) {
 
  if (swMinutes < 100) {
@@ -340,6 +350,7 @@ void stopWatch(int swMinutes, int swSeconds) {
  updateStopWatchDisplay(swSeconds % 10, 3);
  }
 }
+
 
 void updateTimerDisplay(int num, int segIndex) {
  switch (segIndex) {
@@ -366,6 +377,7 @@ void updateTimerDisplay(int num, int segIndex) {
  }
 }
 
+
 void timer(int tmrMinutes, int tmrSeconds) {
 
  if (tmrMinutes < 100) {
@@ -379,14 +391,6 @@ void timer(int tmrMinutes, int tmrSeconds) {
  updateTimerDisplay(tmrSeconds / 10, 2);
  updateTimerDisplay(tmrSeconds % 10, 3);
  }
-}
-
-void set() {
-
- hoursTens = hours / 10;
- hoursOnes = hours % 10;
- minutesTens = minutes / 10;
- minutesOnes = minutes % 10;
 }
 
 
@@ -407,12 +411,10 @@ void main() {
 
  while (1) {
  if (sysMode == 0 || sysMode == 1) {
- displayClockTime(hours, minutes, clockMode);
+ clock(hours, minutes, clockMode);
  } else if (sysMode == 2) {
-
  stopWatch(swMinutes, swSeconds);
  } else if (sysMode == 3) {
-
  timer(tmrMinutes, tmrSeconds);
  blink();
  }

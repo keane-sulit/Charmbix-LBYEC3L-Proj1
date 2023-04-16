@@ -3,7 +3,7 @@ main
 		____DoICP
 	portInit
 	interruptInit
-	displayClockTime
+	clock
 		toggleClockTwelve
 			Div_16x16_S
 				Div_16x16_S_L
