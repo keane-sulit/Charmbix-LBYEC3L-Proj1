@@ -59,11 +59,13 @@ unsigned int incrementFlag = 0;  // 0 = No, 1 = Yes
 char dispDigit[10] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99,
                       0x92, 0x82, 0xF8, 0x80, 0x90};
 
+// Function to initialize the ports
 void portInit() {
     TRISC = 0x00;  // PORTC is the data bus
     TRISD = 0x00;  // PORTD is the address bus
 }
 
+// Function to initialize the interrupts
 void interruptInit() {
     INTCON.f7 = 1;      // Enable Global Interrupt
     INTCON.f6 = 1;      // Enable Peripheral Interrupt
@@ -125,6 +127,7 @@ void update() {
 
 }
 
+// Function for interrupt service routines
 void interrupt() {
     INTCON.f7 = 0;  // Disable Global Interrupt
 
@@ -419,6 +422,7 @@ void blink() {
     }
 }
 
+// Main function
 void main() {
     portInit();       // Initialize the ports
     interruptInit();  // Initialize the interrupts
