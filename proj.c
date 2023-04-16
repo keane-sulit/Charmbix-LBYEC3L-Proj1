@@ -26,16 +26,6 @@ RD2 = Tens digit of minutes
 RD3 = Ones digit of minutes
 */
 
-unsigned int i = 0;  // General purpose counter      unused
-unsigned int j = 0;  // General purpose counter      unused
-unsigned int k = 0;  // General purpose counter      unused
-unsigned int l = 0;  // General purpose counter      unused
-
-unsigned int hoursTens = 0;    // 0 = Not set, 1 = Set     unused
-unsigned int hoursOnes = 0;    // 0 = Not set, 1 = Set     unused
-unsigned int minutesTens = 0;  // 0 = Not set, 1 = Set     unused
-unsigned int minutesOnes = 0;  // 0 = Not set, 1 = Set     unused
-
 // Internal clock variables
 unsigned char tmr0Count = 0;  // Increments every 13.107ms
 
@@ -133,13 +123,6 @@ void update() {
         return;
     }
 
-    // SOON: Update alarm
-    /* if (sysMode == 4) {  // ALARM
-
-    } else {
-        // Do nothing since clock is paused.
-        return;
-    } */
 }
 
 void interrupt() {
@@ -448,6 +431,6 @@ void main() {
         } else if (sysMode == 3) {
             timer(tmrMinutes, tmrSeconds);
             blink();
-        }  // TODO: Add a case for the alarm
+        }
     }
 }
