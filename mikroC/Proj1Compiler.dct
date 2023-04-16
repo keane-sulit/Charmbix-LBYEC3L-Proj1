@@ -229,9 +229,6 @@ go_done_bit
 go_not_done
 go_not_done_bit
 hours
-hoursones
-hourstens
-i
 i2c_data
 i2c_data_bit
 i2c_read
@@ -272,9 +269,6 @@ ispunct
 isspace
 isupper
 isxdigit
-j
-k
-l
 labs
 ldiv
 longint2double
@@ -283,8 +277,6 @@ main
 max
 min
 minutes
-minutesones
-minutestens
 mul_16x16_s
 mul_16x16_u
 mul_32x32_fp

@@ -1,16 +1,5 @@
 #line 1 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
-#line 29 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
-unsigned int i = 0;
-unsigned int j = 0;
-unsigned int k = 0;
-unsigned int l = 0;
-
-unsigned int hoursTens = 0;
-unsigned int hoursOnes = 0;
-unsigned int minutesTens = 0;
-unsigned int minutesOnes = 0;
-
-
+#line 36 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
 unsigned char tmr0Count = 0;
 
 
@@ -64,8 +53,8 @@ void interruptInit() {
 
 
  OPTION_REG.f2 = 1;
- OPTION_REG.f1 = 0;
- OPTION_REG.f0 = 0;
+ OPTION_REG.f1 = 1;
+ OPTION_REG.f0 = 1;
 }
 
 
@@ -109,7 +98,7 @@ void update() {
 
  return;
  }
-#line 146 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+#line 142 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
 }
 
 
@@ -118,7 +107,7 @@ void interrupt() {
 
 
  if (INTCON.f2 == 1) {
- if (tmr0Count == 10) {
+ if (tmr0Count == 76) {
  tmr0Count = 0;
  update();
  } else {
@@ -396,7 +385,7 @@ void timer(int tmrMinutes, int tmrSeconds) {
  updateTimerDisplay(tmrSeconds % 10, 3);
  }
 }
-#line 449 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+#line 445 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
 void main() {
  portInit();
  interruptInit();

@@ -7,6 +7,9 @@ Final Build Version: 1.0.1
 Fixes:
 1.0.0 - Initial build
 1.0.1 - `blink()` function was removed since it was causing the clock to break.
+1.1.0 - Updated TMR0 config for hardware testing
+1.1.1 - Removed unused variables
+1.1.2 - Adjusted code readability
 
 Build Status
 - [o] Clock Mode (24hr/12hr)
@@ -29,16 +32,6 @@ RD1 = Ones digit of hours
 RD2 = Tens digit of minutes
 RD3 = Ones digit of minutes
 */
-
-unsigned int i = 0;  // General purpose counter      unused
-unsigned int j = 0;  // General purpose counter      unused
-unsigned int k = 0;  // General purpose counter      unused
-unsigned int l = 0;  // General purpose counter      unused
-
-unsigned int hoursTens = 0;    // 0 = Not set, 1 = Set     unused
-unsigned int hoursOnes = 0;    // 0 = Not set, 1 = Set     unused
-unsigned int minutesTens = 0;  // 0 = Not set, 1 = Set     unused
-unsigned int minutesOnes = 0;  // 0 = Not set, 1 = Set     unused
 
 // Internal clock variables
 unsigned char tmr0Count = 0;  // Increments every 13.107ms
@@ -94,14 +87,14 @@ void interruptInit() {
     // Prescaler Rate Select bits (111 = 1:256)
     // Change to 100 = 1:16 when performing simulation testing
     OPTION_REG.f2 = 1;
-    OPTION_REG.f1 = 0;
-    OPTION_REG.f0 = 0;
+    OPTION_REG.f1 = 1;
+    OPTION_REG.f0 = 1;
 }
 
 // Function to update the time variables
 void update() {
     // Clock continuously updates regardless of mode
-    // TODO: Add condition - sysMode != 4
+
     // Update clock
     seconds++;
     if (seconds > 59) {  // CLOCK
@@ -140,13 +133,6 @@ void update() {
         return;
     }
 
-    // SOON: Update alarm
-    /* if (sysMode == 4) {  // ALARM
-
-    } else {
-        // Do nothing since clock is paused.
-        return;
-    } */
 }
 
 // Function for interrupt service routines
@@ -155,7 +141,7 @@ void interrupt() {
 
     // ISR for TMR0
     if (INTCON.f2 == 1) {
-        if (tmr0Count == 10) {  // Change to 76 after simulation testing
+        if (tmr0Count == 76) {  // Change to 76 after simulation testing
             tmr0Count = 0;
             update();           // Update time variables
         } else {
@@ -195,7 +181,7 @@ void interrupt() {
     // ISR for RB Port Change Interrupt
     if (INTCON.f0 == 1) {
 
-        // PAUSE/GO button: Pause or resume system
+        // RB4 - PAUSE/GO button: Pause or resume system
         if (PORTB.f4 == 0) {
             delay_ms(50);
             // Clock pause
@@ -224,7 +210,7 @@ void interrupt() {
             }
         }
         
-        // RESET button: Reset time variables
+        // RB5 - RESET button: Reset time variables
         if (PORTB.f5 == 0) {
             delay_ms(50);
             // Clock reset
@@ -245,7 +231,7 @@ void interrupt() {
             }
         }
 
-        // SET button: Select digit to set
+        // RB6 - SET button: Select digit to set
         if (PORTB.f6 == 0) {
             delay_ms(50);
             // Digit set select
@@ -258,7 +244,7 @@ void interrupt() {
             }
         }
 
-        // INCREMENT button: Increment time variables
+        // RB7 - INCREMENT button: Increment time variables
         if (PORTB.f7 == 0) {
             delay_ms(50);
             // Clock set increment
@@ -434,21 +420,6 @@ void timer(int tmrMinutes, int tmrSeconds) {
     }
 }
 
-// FIXME: Fix this function since it recurses infinitely
-/* void blink() {
-    if (tmrSeconds == 0 && tmrMinutes == 0) {
-        for (i == 0; i < 10; i++) {
-            PORTD = 0x00;
-            PORTC = 0x00;
-            delay_ms(500);
-            PORTD = 0x0F;
-            PORTC = 0xFF;
-            delay_ms(500);
-        }
-        return;
-    }
-} */
-
 // Main function
 void main() {
     portInit();                 // Initialize the ports
@@ -461,7 +432,6 @@ void main() {
             stopWatch(swMinutes, swSeconds);
         } else if (sysMode == 3) {
             timer(tmrMinutes, tmrSeconds);
-            /* blink(); */
-        }  // TODO: Add a case for the alarm
+        }
     }
 }

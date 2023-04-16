@@ -1,54 +1,54 @@
 
 _portInit:
 
-;Proj1Compiler.c,73 :: 		void portInit() {
-;Proj1Compiler.c,74 :: 		TRISC = 0x00;  // PORTC is the data bus
+;Proj1Compiler.c,69 :: 		void portInit() {
+;Proj1Compiler.c,70 :: 		TRISC = 0x00;  // PORTC is the data bus
 	CLRF       TRISC+0
-;Proj1Compiler.c,75 :: 		TRISD = 0x00;  // PORTD is the address bus
+;Proj1Compiler.c,71 :: 		TRISD = 0x00;  // PORTD is the address bus
 	CLRF       TRISD+0
-;Proj1Compiler.c,76 :: 		}
+;Proj1Compiler.c,72 :: 		}
 L_end_portInit:
 	RETURN
 ; end of _portInit
 
 _interruptInit:
 
-;Proj1Compiler.c,80 :: 		void interruptInit() {
-;Proj1Compiler.c,81 :: 		INTCON.f7 = 1;      // Enable Global Interrupt
+;Proj1Compiler.c,76 :: 		void interruptInit() {
+;Proj1Compiler.c,77 :: 		INTCON.f7 = 1;      // Enable Global Interrupt
 	BSF        INTCON+0, 7
-;Proj1Compiler.c,82 :: 		INTCON.f6 = 1;      // Enable Peripheral Interrupt
+;Proj1Compiler.c,78 :: 		INTCON.f6 = 1;      // Enable Peripheral Interrupt
 	BSF        INTCON+0, 6
-;Proj1Compiler.c,83 :: 		INTCON.f5 = 1;      // Enable TMR0 Interrupt
+;Proj1Compiler.c,79 :: 		INTCON.f5 = 1;      // Enable TMR0 Interrupt
 	BSF        INTCON+0, 5
-;Proj1Compiler.c,84 :: 		INTCON.f4 = 1;      // Enable RB0 External Interrupt Port Change Interrupt
+;Proj1Compiler.c,80 :: 		INTCON.f4 = 1;      // Enable RB0 External Interrupt Port Change Interrupt
 	BSF        INTCON+0, 4
-;Proj1Compiler.c,85 :: 		INTCON.f3 = 1;      // Enable RB Port Change Interrupt */
+;Proj1Compiler.c,81 :: 		INTCON.f3 = 1;      // Enable RB Port Change Interrupt */
 	BSF        INTCON+0, 3
-;Proj1Compiler.c,86 :: 		OPTION_REG.f5 = 0;  // Internal Instruction Cycle Clock (CLKO)
+;Proj1Compiler.c,82 :: 		OPTION_REG.f5 = 0;  // Internal Instruction Cycle Clock (CLKO)
 	BCF        OPTION_REG+0, 5
-;Proj1Compiler.c,87 :: 		OPTION_REG.f4 = 0;  // Increment on Low-to-High Transition on T0CKI Pin
+;Proj1Compiler.c,83 :: 		OPTION_REG.f4 = 0;  // Increment on Low-to-High Transition on T0CKI Pin
 	BCF        OPTION_REG+0, 4
-;Proj1Compiler.c,88 :: 		OPTION_REG.f3 = 0;  // Prescaler is assigned to the Timer0 module
+;Proj1Compiler.c,84 :: 		OPTION_REG.f3 = 0;  // Prescaler is assigned to the Timer0 module
 	BCF        OPTION_REG+0, 3
-;Proj1Compiler.c,92 :: 		OPTION_REG.f2 = 1;
+;Proj1Compiler.c,88 :: 		OPTION_REG.f2 = 1;
 	BSF        OPTION_REG+0, 2
-;Proj1Compiler.c,93 :: 		OPTION_REG.f1 = 0;
-	BCF        OPTION_REG+0, 1
-;Proj1Compiler.c,94 :: 		OPTION_REG.f0 = 0;
-	BCF        OPTION_REG+0, 0
-;Proj1Compiler.c,95 :: 		}
+;Proj1Compiler.c,89 :: 		OPTION_REG.f1 = 1;
+	BSF        OPTION_REG+0, 1
+;Proj1Compiler.c,90 :: 		OPTION_REG.f0 = 1;
+	BSF        OPTION_REG+0, 0
+;Proj1Compiler.c,91 :: 		}
 L_end_interruptInit:
 	RETURN
 ; end of _interruptInit
 
 _update:
 
-;Proj1Compiler.c,98 :: 		void update() {
-;Proj1Compiler.c,102 :: 		seconds++;
+;Proj1Compiler.c,94 :: 		void update() {
+;Proj1Compiler.c,98 :: 		seconds++;
 	INCF       _seconds+0, 1
 	BTFSC      STATUS+0, 2
 	INCF       _seconds+1, 1
-;Proj1Compiler.c,103 :: 		if (seconds > 59) {  // CLOCK
+;Proj1Compiler.c,99 :: 		if (seconds > 59) {  // CLOCK
 	MOVF       _seconds+1, 0
 	SUBLW      0
 	BTFSS      STATUS+0, 2
@@ -58,14 +58,14 @@ _update:
 L__update145:
 	BTFSC      STATUS+0, 0
 	GOTO       L_update0
-;Proj1Compiler.c,104 :: 		seconds = 0;
+;Proj1Compiler.c,100 :: 		seconds = 0;
 	CLRF       _seconds+0
 	CLRF       _seconds+1
-;Proj1Compiler.c,105 :: 		minutes++;
+;Proj1Compiler.c,101 :: 		minutes++;
 	INCF       _minutes+0, 1
 	BTFSC      STATUS+0, 2
 	INCF       _minutes+1, 1
-;Proj1Compiler.c,106 :: 		if (minutes > 59) {
+;Proj1Compiler.c,102 :: 		if (minutes > 59) {
 	MOVF       _minutes+1, 0
 	SUBLW      0
 	BTFSS      STATUS+0, 2
@@ -75,18 +75,18 @@ L__update145:
 L__update146:
 	BTFSC      STATUS+0, 0
 	GOTO       L_update1
-;Proj1Compiler.c,107 :: 		minutes = 0;
+;Proj1Compiler.c,103 :: 		minutes = 0;
 	CLRF       _minutes+0
 	CLRF       _minutes+1
-;Proj1Compiler.c,108 :: 		hours++;
+;Proj1Compiler.c,104 :: 		hours++;
 	INCF       _hours+0, 1
 	BTFSC      STATUS+0, 2
 	INCF       _hours+1, 1
-;Proj1Compiler.c,109 :: 		}
+;Proj1Compiler.c,105 :: 		}
 L_update1:
-;Proj1Compiler.c,110 :: 		}
+;Proj1Compiler.c,106 :: 		}
 L_update0:
-;Proj1Compiler.c,113 :: 		if (sysMode == 2 && swState == 0) {
+;Proj1Compiler.c,109 :: 		if (sysMode == 2 && swState == 0) {
 	MOVLW      0
 	XORWF      _sysMode+1, 0
 	BTFSS      STATUS+0, 2
@@ -106,11 +106,11 @@ L__update148:
 	BTFSS      STATUS+0, 2
 	GOTO       L_update4
 L__update133:
-;Proj1Compiler.c,114 :: 		swSeconds++;
+;Proj1Compiler.c,110 :: 		swSeconds++;
 	INCF       _swSeconds+0, 1
 	BTFSC      STATUS+0, 2
 	INCF       _swSeconds+1, 1
-;Proj1Compiler.c,115 :: 		if (swSeconds > 59) {
+;Proj1Compiler.c,111 :: 		if (swSeconds > 59) {
 	MOVF       _swSeconds+1, 0
 	SUBLW      0
 	BTFSS      STATUS+0, 2
@@ -120,16 +120,16 @@ L__update133:
 L__update149:
 	BTFSC      STATUS+0, 0
 	GOTO       L_update5
-;Proj1Compiler.c,116 :: 		swSeconds = 0;
+;Proj1Compiler.c,112 :: 		swSeconds = 0;
 	CLRF       _swSeconds+0
 	CLRF       _swSeconds+1
-;Proj1Compiler.c,117 :: 		swMinutes++;
+;Proj1Compiler.c,113 :: 		swMinutes++;
 	INCF       _swMinutes+0, 1
 	BTFSC      STATUS+0, 2
 	INCF       _swMinutes+1, 1
-;Proj1Compiler.c,118 :: 		}
+;Proj1Compiler.c,114 :: 		}
 L_update5:
-;Proj1Compiler.c,119 :: 		} else if (sysMode == 2 && swState == 1) {
+;Proj1Compiler.c,115 :: 		} else if (sysMode == 2 && swState == 1) {
 	GOTO       L_update6
 L_update4:
 	MOVLW      0
@@ -151,12 +151,12 @@ L__update151:
 	BTFSS      STATUS+0, 2
 	GOTO       L_update9
 L__update132:
-;Proj1Compiler.c,121 :: 		return;
+;Proj1Compiler.c,117 :: 		return;
 	GOTO       L_end_update
-;Proj1Compiler.c,122 :: 		}
+;Proj1Compiler.c,118 :: 		}
 L_update9:
 L_update6:
-;Proj1Compiler.c,125 :: 		if (sysMode == 3 && tmrState == 0) {
+;Proj1Compiler.c,121 :: 		if (sysMode == 3 && tmrState == 0) {
 	MOVLW      0
 	XORWF      _sysMode+1, 0
 	BTFSS      STATUS+0, 2
@@ -176,7 +176,7 @@ L__update153:
 	BTFSS      STATUS+0, 2
 	GOTO       L_update12
 L__update131:
-;Proj1Compiler.c,126 :: 		if (tmrSeconds > 0) {
+;Proj1Compiler.c,122 :: 		if (tmrSeconds > 0) {
 	MOVF       _tmrSeconds+1, 0
 	SUBLW      0
 	BTFSS      STATUS+0, 2
@@ -186,15 +186,15 @@ L__update131:
 L__update154:
 	BTFSC      STATUS+0, 0
 	GOTO       L_update13
-;Proj1Compiler.c,127 :: 		tmrSeconds--;
+;Proj1Compiler.c,123 :: 		tmrSeconds--;
 	MOVLW      1
 	SUBWF      _tmrSeconds+0, 1
 	BTFSS      STATUS+0, 0
 	DECF       _tmrSeconds+1, 1
-;Proj1Compiler.c,128 :: 		} else {
+;Proj1Compiler.c,124 :: 		} else {
 	GOTO       L_update14
 L_update13:
-;Proj1Compiler.c,129 :: 		if (tmrMinutes > 0) {
+;Proj1Compiler.c,125 :: 		if (tmrMinutes > 0) {
 	MOVF       _tmrMinutes+1, 0
 	SUBLW      0
 	BTFSS      STATUS+0, 2
@@ -204,21 +204,21 @@ L_update13:
 L__update155:
 	BTFSC      STATUS+0, 0
 	GOTO       L_update15
-;Proj1Compiler.c,130 :: 		tmrMinutes--;
+;Proj1Compiler.c,126 :: 		tmrMinutes--;
 	MOVLW      1
 	SUBWF      _tmrMinutes+0, 1
 	BTFSS      STATUS+0, 0
 	DECF       _tmrMinutes+1, 1
-;Proj1Compiler.c,131 :: 		tmrSeconds = 59;
+;Proj1Compiler.c,127 :: 		tmrSeconds = 59;
 	MOVLW      59
 	MOVWF      _tmrSeconds+0
 	MOVLW      0
 	MOVWF      _tmrSeconds+1
-;Proj1Compiler.c,132 :: 		}
+;Proj1Compiler.c,128 :: 		}
 L_update15:
-;Proj1Compiler.c,133 :: 		}
+;Proj1Compiler.c,129 :: 		}
 L_update14:
-;Proj1Compiler.c,134 :: 		} else if (sysMode == 3 && tmrState == 1) {
+;Proj1Compiler.c,130 :: 		} else if (sysMode == 3 && tmrState == 1) {
 	GOTO       L_update16
 L_update12:
 	MOVLW      0
@@ -240,12 +240,12 @@ L__update157:
 	BTFSS      STATUS+0, 2
 	GOTO       L_update19
 L__update130:
-;Proj1Compiler.c,136 :: 		return;
+;Proj1Compiler.c,132 :: 		return;
 	GOTO       L_end_update
-;Proj1Compiler.c,137 :: 		}
+;Proj1Compiler.c,133 :: 		}
 L_update19:
 L_update16:
-;Proj1Compiler.c,146 :: 		}
+;Proj1Compiler.c,142 :: 		}
 L_end_update:
 	RETURN
 ; end of _update
@@ -259,39 +259,39 @@ _interrupt:
 	MOVWF      ___savePCLATH+0
 	CLRF       PCLATH+0
 
-;Proj1Compiler.c,149 :: 		void interrupt() {
-;Proj1Compiler.c,150 :: 		INTCON.f7 = 0;  // Disable Global Interrupt
+;Proj1Compiler.c,145 :: 		void interrupt() {
+;Proj1Compiler.c,146 :: 		INTCON.f7 = 0;  // Disable Global Interrupt
 	BCF        INTCON+0, 7
-;Proj1Compiler.c,153 :: 		if (INTCON.f2 == 1) {
+;Proj1Compiler.c,149 :: 		if (INTCON.f2 == 1) {
 	BTFSS      INTCON+0, 2
 	GOTO       L_interrupt20
-;Proj1Compiler.c,154 :: 		if (tmr0Count == 10) {  // Change to 76 after simulation testing
+;Proj1Compiler.c,150 :: 		if (tmr0Count == 76) {  // Change to 76 after simulation testing
 	MOVF       _tmr0Count+0, 0
-	XORLW      10
+	XORLW      76
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt21
-;Proj1Compiler.c,155 :: 		tmr0Count = 0;
+;Proj1Compiler.c,151 :: 		tmr0Count = 0;
 	CLRF       _tmr0Count+0
-;Proj1Compiler.c,156 :: 		update();           // Update time variables
+;Proj1Compiler.c,152 :: 		update();           // Update time variables
 	CALL       _update+0
-;Proj1Compiler.c,157 :: 		} else {
+;Proj1Compiler.c,153 :: 		} else {
 	GOTO       L_interrupt22
 L_interrupt21:
-;Proj1Compiler.c,158 :: 		tmr0Count++;
+;Proj1Compiler.c,154 :: 		tmr0Count++;
 	INCF       _tmr0Count+0, 1
-;Proj1Compiler.c,159 :: 		}
+;Proj1Compiler.c,155 :: 		}
 L_interrupt22:
-;Proj1Compiler.c,160 :: 		INTCON.f2 = 0;          // Clear TMR0 Interrupt Flag
+;Proj1Compiler.c,156 :: 		INTCON.f2 = 0;          // Clear TMR0 Interrupt Flag
 	BCF        INTCON+0, 2
-;Proj1Compiler.c,161 :: 		}
+;Proj1Compiler.c,157 :: 		}
 L_interrupt20:
-;Proj1Compiler.c,164 :: 		if (INTCON.f1 == 1) {
+;Proj1Compiler.c,160 :: 		if (INTCON.f1 == 1) {
 	BTFSS      INTCON+0, 1
 	GOTO       L_interrupt23
-;Proj1Compiler.c,167 :: 		if (PORTB.f0 == 0) {
+;Proj1Compiler.c,163 :: 		if (PORTB.f0 == 0) {
 	BTFSC      PORTB+0, 0
 	GOTO       L_interrupt24
-;Proj1Compiler.c,168 :: 		delay_ms(50);           // Debounce
+;Proj1Compiler.c,164 :: 		delay_ms(50);           // Debounce
 	MOVLW      2
 	MOVWF      R11+0
 	MOVLW      69
@@ -307,13 +307,13 @@ L_interrupt25:
 	GOTO       L_interrupt25
 	NOP
 	NOP
-;Proj1Compiler.c,169 :: 		}
+;Proj1Compiler.c,165 :: 		}
 L_interrupt24:
-;Proj1Compiler.c,172 :: 		sysMode++;                  // Increment mode
+;Proj1Compiler.c,168 :: 		sysMode++;                  // Increment mode
 	INCF       _sysMode+0, 1
 	BTFSC      STATUS+0, 2
 	INCF       _sysMode+1, 1
-;Proj1Compiler.c,173 :: 		if (sysMode == 1) {         // 24H CLOCK
+;Proj1Compiler.c,169 :: 		if (sysMode == 1) {         // 24H CLOCK
 	MOVLW      0
 	XORWF      _sysMode+1, 0
 	BTFSS      STATUS+0, 2
@@ -323,15 +323,15 @@ L_interrupt24:
 L__interrupt160:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt26
-;Proj1Compiler.c,174 :: 		clockMode = 1;          // 24H
+;Proj1Compiler.c,170 :: 		clockMode = 1;          // 24H
 	MOVLW      1
 	MOVWF      _clockMode+0
 	MOVLW      0
 	MOVWF      _clockMode+1
-;Proj1Compiler.c,175 :: 		clockState = 0;         // GO
+;Proj1Compiler.c,171 :: 		clockState = 0;         // GO
 	CLRF       _clockState+0
 	CLRF       _clockState+1
-;Proj1Compiler.c,176 :: 		} else if (sysMode == 2) {  // STOPWATCH
+;Proj1Compiler.c,172 :: 		} else if (sysMode == 2) {  // STOPWATCH
 	GOTO       L_interrupt27
 L_interrupt26:
 	MOVLW      0
@@ -343,15 +343,15 @@ L_interrupt26:
 L__interrupt161:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt28
-;Proj1Compiler.c,177 :: 		stopWatchMode = 0;      // Default
+;Proj1Compiler.c,173 :: 		stopWatchMode = 0;      // Default
 	CLRF       _stopWatchMode+0
 	CLRF       _stopWatchMode+1
-;Proj1Compiler.c,178 :: 		swState = 1;            // Pause
+;Proj1Compiler.c,174 :: 		swState = 1;            // Pause
 	MOVLW      1
 	MOVWF      _swState+0
 	MOVLW      0
 	MOVWF      _swState+1
-;Proj1Compiler.c,179 :: 		} else if (sysMode == 3) {  // TIMER
+;Proj1Compiler.c,175 :: 		} else if (sysMode == 3) {  // TIMER
 	GOTO       L_interrupt29
 L_interrupt28:
 	MOVLW      0
@@ -363,15 +363,15 @@ L_interrupt28:
 L__interrupt162:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt30
-;Proj1Compiler.c,180 :: 		timerMode = 0;          // Default
+;Proj1Compiler.c,176 :: 		timerMode = 0;          // Default
 	CLRF       _timerMode+0
 	CLRF       _timerMode+1
-;Proj1Compiler.c,181 :: 		tmrState = 1;           // Pause
+;Proj1Compiler.c,177 :: 		tmrState = 1;           // Pause
 	MOVLW      1
 	MOVWF      _tmrState+0
 	MOVLW      0
 	MOVWF      _tmrState+1
-;Proj1Compiler.c,182 :: 		} else if (sysMode == 4) {  // 12H CLOCK
+;Proj1Compiler.c,178 :: 		} else if (sysMode == 4) {  // 12H CLOCK
 	GOTO       L_interrupt31
 L_interrupt30:
 	MOVLW      0
@@ -383,31 +383,31 @@ L_interrupt30:
 L__interrupt163:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt32
-;Proj1Compiler.c,183 :: 		sysMode = 0;            // Reset to 12H
+;Proj1Compiler.c,179 :: 		sysMode = 0;            // Reset to 12H
 	CLRF       _sysMode+0
 	CLRF       _sysMode+1
-;Proj1Compiler.c,184 :: 		clockMode = 0;          // 12H
+;Proj1Compiler.c,180 :: 		clockMode = 0;          // 12H
 	CLRF       _clockMode+0
 	CLRF       _clockMode+1
-;Proj1Compiler.c,185 :: 		clockState = 0;         // GO
+;Proj1Compiler.c,181 :: 		clockState = 0;         // GO
 	CLRF       _clockState+0
 	CLRF       _clockState+1
-;Proj1Compiler.c,186 :: 		}
+;Proj1Compiler.c,182 :: 		}
 L_interrupt32:
 L_interrupt31:
 L_interrupt29:
 L_interrupt27:
-;Proj1Compiler.c,188 :: 		INTCON.f1 = 0;  // Clear RB0 External Interrupt Flag
+;Proj1Compiler.c,184 :: 		INTCON.f1 = 0;  // Clear RB0 External Interrupt Flag
 	BCF        INTCON+0, 1
-;Proj1Compiler.c,189 :: 		}
+;Proj1Compiler.c,185 :: 		}
 L_interrupt23:
-;Proj1Compiler.c,192 :: 		if (INTCON.f0 == 1) {
+;Proj1Compiler.c,188 :: 		if (INTCON.f0 == 1) {
 	BTFSS      INTCON+0, 0
 	GOTO       L_interrupt33
-;Proj1Compiler.c,195 :: 		if (PORTB.f4 == 0) {
+;Proj1Compiler.c,191 :: 		if (PORTB.f4 == 0) {
 	BTFSC      PORTB+0, 4
 	GOTO       L_interrupt34
-;Proj1Compiler.c,196 :: 		delay_ms(50);
+;Proj1Compiler.c,192 :: 		delay_ms(50);
 	MOVLW      2
 	MOVWF      R11+0
 	MOVLW      69
@@ -423,7 +423,7 @@ L_interrupt35:
 	GOTO       L_interrupt35
 	NOP
 	NOP
-;Proj1Compiler.c,198 :: 		if (sysMode == 0 || sysMode == 1) {
+;Proj1Compiler.c,194 :: 		if (sysMode == 0 || sysMode == 1) {
 	MOVLW      0
 	XORWF      _sysMode+1, 0
 	BTFSS      STATUS+0, 2
@@ -444,7 +444,7 @@ L__interrupt165:
 	GOTO       L__interrupt139
 	GOTO       L_interrupt38
 L__interrupt139:
-;Proj1Compiler.c,199 :: 		if (clockState == 0) {
+;Proj1Compiler.c,195 :: 		if (clockState == 0) {
 	MOVLW      0
 	XORWF      _clockState+1, 0
 	BTFSS      STATUS+0, 2
@@ -454,22 +454,22 @@ L__interrupt139:
 L__interrupt166:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt39
-;Proj1Compiler.c,200 :: 		clockState = 1;
+;Proj1Compiler.c,196 :: 		clockState = 1;
 	MOVLW      1
 	MOVWF      _clockState+0
 	MOVLW      0
 	MOVWF      _clockState+1
-;Proj1Compiler.c,201 :: 		} else {
+;Proj1Compiler.c,197 :: 		} else {
 	GOTO       L_interrupt40
 L_interrupt39:
-;Proj1Compiler.c,202 :: 		clockState = 0;
+;Proj1Compiler.c,198 :: 		clockState = 0;
 	CLRF       _clockState+0
 	CLRF       _clockState+1
-;Proj1Compiler.c,203 :: 		}
+;Proj1Compiler.c,199 :: 		}
 L_interrupt40:
-;Proj1Compiler.c,204 :: 		}
+;Proj1Compiler.c,200 :: 		}
 L_interrupt38:
-;Proj1Compiler.c,206 :: 		if (sysMode == 2) {
+;Proj1Compiler.c,202 :: 		if (sysMode == 2) {
 	MOVLW      0
 	XORWF      _sysMode+1, 0
 	BTFSS      STATUS+0, 2
@@ -479,7 +479,7 @@ L_interrupt38:
 L__interrupt167:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt41
-;Proj1Compiler.c,207 :: 		if (swState == 0) {
+;Proj1Compiler.c,203 :: 		if (swState == 0) {
 	MOVLW      0
 	XORWF      _swState+1, 0
 	BTFSS      STATUS+0, 2
@@ -489,22 +489,22 @@ L__interrupt167:
 L__interrupt168:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt42
-;Proj1Compiler.c,208 :: 		swState = 1;
+;Proj1Compiler.c,204 :: 		swState = 1;
 	MOVLW      1
 	MOVWF      _swState+0
 	MOVLW      0
 	MOVWF      _swState+1
-;Proj1Compiler.c,209 :: 		} else {
+;Proj1Compiler.c,205 :: 		} else {
 	GOTO       L_interrupt43
 L_interrupt42:
-;Proj1Compiler.c,210 :: 		swState = 0;
+;Proj1Compiler.c,206 :: 		swState = 0;
 	CLRF       _swState+0
 	CLRF       _swState+1
-;Proj1Compiler.c,211 :: 		}
+;Proj1Compiler.c,207 :: 		}
 L_interrupt43:
-;Proj1Compiler.c,212 :: 		}
+;Proj1Compiler.c,208 :: 		}
 L_interrupt41:
-;Proj1Compiler.c,214 :: 		if (sysMode == 3) {
+;Proj1Compiler.c,210 :: 		if (sysMode == 3) {
 	MOVLW      0
 	XORWF      _sysMode+1, 0
 	BTFSS      STATUS+0, 2
@@ -514,7 +514,7 @@ L_interrupt41:
 L__interrupt169:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt44
-;Proj1Compiler.c,215 :: 		if (tmrState == 0) {
+;Proj1Compiler.c,211 :: 		if (tmrState == 0) {
 	MOVLW      0
 	XORWF      _tmrState+1, 0
 	BTFSS      STATUS+0, 2
@@ -524,27 +524,27 @@ L__interrupt169:
 L__interrupt170:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt45
-;Proj1Compiler.c,216 :: 		tmrState = 1;
+;Proj1Compiler.c,212 :: 		tmrState = 1;
 	MOVLW      1
 	MOVWF      _tmrState+0
 	MOVLW      0
 	MOVWF      _tmrState+1
-;Proj1Compiler.c,217 :: 		} else {
+;Proj1Compiler.c,213 :: 		} else {
 	GOTO       L_interrupt46
 L_interrupt45:
-;Proj1Compiler.c,218 :: 		tmrState = 0;
+;Proj1Compiler.c,214 :: 		tmrState = 0;
 	CLRF       _tmrState+0
 	CLRF       _tmrState+1
-;Proj1Compiler.c,219 :: 		}
+;Proj1Compiler.c,215 :: 		}
 L_interrupt46:
-;Proj1Compiler.c,220 :: 		}
+;Proj1Compiler.c,216 :: 		}
 L_interrupt44:
-;Proj1Compiler.c,221 :: 		}
+;Proj1Compiler.c,217 :: 		}
 L_interrupt34:
-;Proj1Compiler.c,224 :: 		if (PORTB.f5 == 0) {
+;Proj1Compiler.c,220 :: 		if (PORTB.f5 == 0) {
 	BTFSC      PORTB+0, 5
 	GOTO       L_interrupt47
-;Proj1Compiler.c,225 :: 		delay_ms(50);
+;Proj1Compiler.c,221 :: 		delay_ms(50);
 	MOVLW      2
 	MOVWF      R11+0
 	MOVLW      69
@@ -560,7 +560,7 @@ L_interrupt48:
 	GOTO       L_interrupt48
 	NOP
 	NOP
-;Proj1Compiler.c,227 :: 		if (sysMode == 0 || sysMode == 1) {
+;Proj1Compiler.c,223 :: 		if (sysMode == 0 || sysMode == 1) {
 	MOVLW      0
 	XORWF      _sysMode+1, 0
 	BTFSS      STATUS+0, 2
@@ -581,18 +581,18 @@ L__interrupt172:
 	GOTO       L__interrupt138
 	GOTO       L_interrupt51
 L__interrupt138:
-;Proj1Compiler.c,228 :: 		seconds = 0;
+;Proj1Compiler.c,224 :: 		seconds = 0;
 	CLRF       _seconds+0
 	CLRF       _seconds+1
-;Proj1Compiler.c,229 :: 		minutes = 0;
+;Proj1Compiler.c,225 :: 		minutes = 0;
 	CLRF       _minutes+0
 	CLRF       _minutes+1
-;Proj1Compiler.c,230 :: 		hours = 0;
+;Proj1Compiler.c,226 :: 		hours = 0;
 	CLRF       _hours+0
 	CLRF       _hours+1
-;Proj1Compiler.c,231 :: 		}
+;Proj1Compiler.c,227 :: 		}
 L_interrupt51:
-;Proj1Compiler.c,233 :: 		if (sysMode == 2) {
+;Proj1Compiler.c,229 :: 		if (sysMode == 2) {
 	MOVLW      0
 	XORWF      _sysMode+1, 0
 	BTFSS      STATUS+0, 2
@@ -602,15 +602,15 @@ L_interrupt51:
 L__interrupt173:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt52
-;Proj1Compiler.c,234 :: 		swSeconds = 0;
+;Proj1Compiler.c,230 :: 		swSeconds = 0;
 	CLRF       _swSeconds+0
 	CLRF       _swSeconds+1
-;Proj1Compiler.c,235 :: 		swMinutes = 0;
+;Proj1Compiler.c,231 :: 		swMinutes = 0;
 	CLRF       _swMinutes+0
 	CLRF       _swMinutes+1
-;Proj1Compiler.c,236 :: 		}
+;Proj1Compiler.c,232 :: 		}
 L_interrupt52:
-;Proj1Compiler.c,238 :: 		if (sysMode == 3) {
+;Proj1Compiler.c,234 :: 		if (sysMode == 3) {
 	MOVLW      0
 	XORWF      _sysMode+1, 0
 	BTFSS      STATUS+0, 2
@@ -620,20 +620,20 @@ L_interrupt52:
 L__interrupt174:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt53
-;Proj1Compiler.c,239 :: 		tmrSeconds = 0;
+;Proj1Compiler.c,235 :: 		tmrSeconds = 0;
 	CLRF       _tmrSeconds+0
 	CLRF       _tmrSeconds+1
-;Proj1Compiler.c,240 :: 		tmrMinutes = 0;
+;Proj1Compiler.c,236 :: 		tmrMinutes = 0;
 	CLRF       _tmrMinutes+0
 	CLRF       _tmrMinutes+1
-;Proj1Compiler.c,241 :: 		}
+;Proj1Compiler.c,237 :: 		}
 L_interrupt53:
-;Proj1Compiler.c,242 :: 		}
+;Proj1Compiler.c,238 :: 		}
 L_interrupt47:
-;Proj1Compiler.c,245 :: 		if (PORTB.f6 == 0) {
+;Proj1Compiler.c,241 :: 		if (PORTB.f6 == 0) {
 	BTFSC      PORTB+0, 6
 	GOTO       L_interrupt54
-;Proj1Compiler.c,246 :: 		delay_ms(50);
+;Proj1Compiler.c,242 :: 		delay_ms(50);
 	MOVLW      2
 	MOVWF      R11+0
 	MOVLW      69
@@ -649,7 +649,7 @@ L_interrupt55:
 	GOTO       L_interrupt55
 	NOP
 	NOP
-;Proj1Compiler.c,248 :: 		if (digitFlag == 0) {
+;Proj1Compiler.c,244 :: 		if (digitFlag == 0) {
 	MOVLW      0
 	XORWF      _digitFlag+1, 0
 	BTFSS      STATUS+0, 2
@@ -659,12 +659,12 @@ L_interrupt55:
 L__interrupt175:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt56
-;Proj1Compiler.c,249 :: 		digitFlag = 1;
+;Proj1Compiler.c,245 :: 		digitFlag = 1;
 	MOVLW      1
 	MOVWF      _digitFlag+0
 	MOVLW      0
 	MOVWF      _digitFlag+1
-;Proj1Compiler.c,250 :: 		} else if (digitFlag == 1) {
+;Proj1Compiler.c,246 :: 		} else if (digitFlag == 1) {
 	GOTO       L_interrupt57
 L_interrupt56:
 	MOVLW      0
@@ -676,12 +676,12 @@ L_interrupt56:
 L__interrupt176:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt58
-;Proj1Compiler.c,251 :: 		digitFlag = 2;
+;Proj1Compiler.c,247 :: 		digitFlag = 2;
 	MOVLW      2
 	MOVWF      _digitFlag+0
 	MOVLW      0
 	MOVWF      _digitFlag+1
-;Proj1Compiler.c,252 :: 		} else if (digitFlag == 2) {
+;Proj1Compiler.c,248 :: 		} else if (digitFlag == 2) {
 	GOTO       L_interrupt59
 L_interrupt58:
 	MOVLW      0
@@ -693,19 +693,19 @@ L_interrupt58:
 L__interrupt177:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt60
-;Proj1Compiler.c,253 :: 		digitFlag = 0;
+;Proj1Compiler.c,249 :: 		digitFlag = 0;
 	CLRF       _digitFlag+0
 	CLRF       _digitFlag+1
-;Proj1Compiler.c,254 :: 		}
+;Proj1Compiler.c,250 :: 		}
 L_interrupt60:
 L_interrupt59:
 L_interrupt57:
-;Proj1Compiler.c,255 :: 		}
+;Proj1Compiler.c,251 :: 		}
 L_interrupt54:
-;Proj1Compiler.c,258 :: 		if (PORTB.f7 == 0) {
+;Proj1Compiler.c,254 :: 		if (PORTB.f7 == 0) {
 	BTFSC      PORTB+0, 7
 	GOTO       L_interrupt61
-;Proj1Compiler.c,259 :: 		delay_ms(50);
+;Proj1Compiler.c,255 :: 		delay_ms(50);
 	MOVLW      2
 	MOVWF      R11+0
 	MOVLW      69
@@ -721,7 +721,7 @@ L_interrupt62:
 	GOTO       L_interrupt62
 	NOP
 	NOP
-;Proj1Compiler.c,261 :: 		if (digitFlag == 1 && (clockMode == 0 || clockMode == 1)) {
+;Proj1Compiler.c,257 :: 		if (digitFlag == 1 && (clockMode == 0 || clockMode == 1)) {
 	MOVLW      0
 	XORWF      _digitFlag+1, 0
 	BTFSS      STATUS+0, 2
@@ -752,7 +752,7 @@ L__interrupt180:
 	GOTO       L_interrupt67
 L__interrupt137:
 L__interrupt136:
-;Proj1Compiler.c,262 :: 		hours = (hours + 1) % 24;
+;Proj1Compiler.c,258 :: 		hours = (hours + 1) % 24;
 	MOVF       _hours+0, 0
 	ADDLW      1
 	MOVWF      R0+0
@@ -774,7 +774,7 @@ L__interrupt136:
 	MOVWF      _hours+0
 	MOVF       R0+1, 0
 	MOVWF      _hours+1
-;Proj1Compiler.c,263 :: 		} else if (digitFlag == 2) {
+;Proj1Compiler.c,259 :: 		} else if (digitFlag == 2) {
 	GOTO       L_interrupt68
 L_interrupt67:
 	MOVLW      0
@@ -786,7 +786,7 @@ L_interrupt67:
 L__interrupt181:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt69
-;Proj1Compiler.c,264 :: 		minutes = (minutes + 1) % 60;
+;Proj1Compiler.c,260 :: 		minutes = (minutes + 1) % 60;
 	MOVF       _minutes+0, 0
 	ADDLW      1
 	MOVWF      R0+0
@@ -808,10 +808,10 @@ L__interrupt181:
 	MOVWF      _minutes+0
 	MOVF       R0+1, 0
 	MOVWF      _minutes+1
-;Proj1Compiler.c,265 :: 		}
+;Proj1Compiler.c,261 :: 		}
 L_interrupt69:
 L_interrupt68:
-;Proj1Compiler.c,268 :: 		if (digitFlag == 1 && timerMode == 0) {
+;Proj1Compiler.c,264 :: 		if (digitFlag == 1 && timerMode == 0) {
 	MOVLW      0
 	XORWF      _digitFlag+1, 0
 	BTFSS      STATUS+0, 2
@@ -831,7 +831,7 @@ L__interrupt183:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt72
 L__interrupt135:
-;Proj1Compiler.c,269 :: 		tmrMinutes = (tmrMinutes + 1) % 60;
+;Proj1Compiler.c,265 :: 		tmrMinutes = (tmrMinutes + 1) % 60;
 	MOVF       _tmrMinutes+0, 0
 	ADDLW      1
 	MOVWF      R0+0
@@ -853,7 +853,7 @@ L__interrupt135:
 	MOVWF      _tmrMinutes+0
 	MOVF       R0+1, 0
 	MOVWF      _tmrMinutes+1
-;Proj1Compiler.c,270 :: 		} else if (digitFlag == 2 && sysMode == 3) {
+;Proj1Compiler.c,266 :: 		} else if (digitFlag == 2 && sysMode == 3) {
 	GOTO       L_interrupt73
 L_interrupt72:
 	MOVLW      0
@@ -875,7 +875,7 @@ L__interrupt185:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt76
 L__interrupt134:
-;Proj1Compiler.c,271 :: 		tmrSeconds = (tmrSeconds + 1) % 60;
+;Proj1Compiler.c,267 :: 		tmrSeconds = (tmrSeconds + 1) % 60;
 	MOVF       _tmrSeconds+0, 0
 	ADDLW      1
 	MOVWF      R0+0
@@ -897,18 +897,18 @@ L__interrupt134:
 	MOVWF      _tmrSeconds+0
 	MOVF       R0+1, 0
 	MOVWF      _tmrSeconds+1
-;Proj1Compiler.c,272 :: 		}
+;Proj1Compiler.c,268 :: 		}
 L_interrupt76:
 L_interrupt73:
-;Proj1Compiler.c,273 :: 		}
+;Proj1Compiler.c,269 :: 		}
 L_interrupt61:
-;Proj1Compiler.c,275 :: 		INTCON.f0 = 0;  // Clear RB Port Change Interrupt Flag
+;Proj1Compiler.c,271 :: 		INTCON.f0 = 0;  // Clear RB Port Change Interrupt Flag
 	BCF        INTCON+0, 0
-;Proj1Compiler.c,276 :: 		}
+;Proj1Compiler.c,272 :: 		}
 L_interrupt33:
-;Proj1Compiler.c,278 :: 		INTCON.f7 = 1;  // Enable Global Interrupt
+;Proj1Compiler.c,274 :: 		INTCON.f7 = 1;  // Enable Global Interrupt
 	BSF        INTCON+0, 7
-;Proj1Compiler.c,279 :: 		}
+;Proj1Compiler.c,275 :: 		}
 L_end_interrupt:
 L__interrupt159:
 	MOVF       ___savePCLATH+0, 0
@@ -922,21 +922,21 @@ L__interrupt159:
 
 _updateClockDisplay:
 
-;Proj1Compiler.c,282 :: 		void updateClockDisplay(int num, int segIndex) {
-;Proj1Compiler.c,283 :: 		switch (segIndex) {
+;Proj1Compiler.c,278 :: 		void updateClockDisplay(int num, int segIndex) {
+;Proj1Compiler.c,279 :: 		switch (segIndex) {
 	GOTO       L_updateClockDisplay77
-;Proj1Compiler.c,284 :: 		case 0:
+;Proj1Compiler.c,280 :: 		case 0:
 L_updateClockDisplay79:
-;Proj1Compiler.c,285 :: 		PORTD = 0x01;  // Select the first digit
+;Proj1Compiler.c,281 :: 		PORTD = 0x01;  // Select the first digit
 	MOVLW      1
 	MOVWF      PORTD+0
-;Proj1Compiler.c,286 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,282 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateClockDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,287 :: 		delay_ms(1);
+;Proj1Compiler.c,283 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -946,20 +946,20 @@ L_updateClockDisplay80:
 	GOTO       L_updateClockDisplay80
 	DECFSZ     R12+0, 1
 	GOTO       L_updateClockDisplay80
-;Proj1Compiler.c,288 :: 		break;
+;Proj1Compiler.c,284 :: 		break;
 	GOTO       L_updateClockDisplay78
-;Proj1Compiler.c,289 :: 		case 1:
+;Proj1Compiler.c,285 :: 		case 1:
 L_updateClockDisplay81:
-;Proj1Compiler.c,290 :: 		PORTD = 0x02;  // Select the second digit
+;Proj1Compiler.c,286 :: 		PORTD = 0x02;  // Select the second digit
 	MOVLW      2
 	MOVWF      PORTD+0
-;Proj1Compiler.c,291 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,287 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateClockDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,292 :: 		delay_ms(1);
+;Proj1Compiler.c,288 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -969,20 +969,20 @@ L_updateClockDisplay82:
 	GOTO       L_updateClockDisplay82
 	DECFSZ     R12+0, 1
 	GOTO       L_updateClockDisplay82
-;Proj1Compiler.c,293 :: 		break;
+;Proj1Compiler.c,289 :: 		break;
 	GOTO       L_updateClockDisplay78
-;Proj1Compiler.c,294 :: 		case 2:
+;Proj1Compiler.c,290 :: 		case 2:
 L_updateClockDisplay83:
-;Proj1Compiler.c,295 :: 		PORTD = 0x04;  // Select the third digit
+;Proj1Compiler.c,291 :: 		PORTD = 0x04;  // Select the third digit
 	MOVLW      4
 	MOVWF      PORTD+0
-;Proj1Compiler.c,296 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,292 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateClockDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,297 :: 		delay_ms(1);
+;Proj1Compiler.c,293 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -992,20 +992,20 @@ L_updateClockDisplay84:
 	GOTO       L_updateClockDisplay84
 	DECFSZ     R12+0, 1
 	GOTO       L_updateClockDisplay84
-;Proj1Compiler.c,298 :: 		break;
+;Proj1Compiler.c,294 :: 		break;
 	GOTO       L_updateClockDisplay78
-;Proj1Compiler.c,299 :: 		case 3:
+;Proj1Compiler.c,295 :: 		case 3:
 L_updateClockDisplay85:
-;Proj1Compiler.c,300 :: 		PORTD = 0x08;  // Select the fourth digit
+;Proj1Compiler.c,296 :: 		PORTD = 0x08;  // Select the fourth digit
 	MOVLW      8
 	MOVWF      PORTD+0
-;Proj1Compiler.c,301 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,297 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateClockDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,302 :: 		delay_ms(1);
+;Proj1Compiler.c,298 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -1015,9 +1015,9 @@ L_updateClockDisplay86:
 	GOTO       L_updateClockDisplay86
 	DECFSZ     R12+0, 1
 	GOTO       L_updateClockDisplay86
-;Proj1Compiler.c,303 :: 		break;
+;Proj1Compiler.c,299 :: 		break;
 	GOTO       L_updateClockDisplay78
-;Proj1Compiler.c,304 :: 		}
+;Proj1Compiler.c,300 :: 		}
 L_updateClockDisplay77:
 	MOVLW      0
 	XORWF      FARG_updateClockDisplay_segIndex+1, 0
@@ -1056,15 +1056,15 @@ L__updateClockDisplay190:
 	BTFSC      STATUS+0, 2
 	GOTO       L_updateClockDisplay85
 L_updateClockDisplay78:
-;Proj1Compiler.c,305 :: 		}
+;Proj1Compiler.c,301 :: 		}
 L_end_updateClockDisplay:
 	RETURN
 ; end of _updateClockDisplay
 
 _toggleClockTwelve:
 
-;Proj1Compiler.c,308 :: 		void toggleClockTwelve(int hours, int minutes) {
-;Proj1Compiler.c,309 :: 		if (0 < hours && hours < 13) {
+;Proj1Compiler.c,304 :: 		void toggleClockTwelve(int hours, int minutes) {
+;Proj1Compiler.c,305 :: 		if (0 < hours && hours < 13) {
 	MOVLW      128
 	MOVWF      R0+0
 	MOVLW      128
@@ -1090,7 +1090,7 @@ L__toggleClockTwelve193:
 	BTFSC      STATUS+0, 0
 	GOTO       L_toggleClockTwelve89
 L__toggleClockTwelve140:
-;Proj1Compiler.c,310 :: 		updateClockDisplay(hours / 10, 0);
+;Proj1Compiler.c,306 :: 		updateClockDisplay(hours / 10, 0);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1107,7 +1107,7 @@ L__toggleClockTwelve140:
 	CLRF       FARG_updateClockDisplay_segIndex+0
 	CLRF       FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,311 :: 		updateClockDisplay(hours % 10, 1);
+;Proj1Compiler.c,307 :: 		updateClockDisplay(hours % 10, 1);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1130,7 +1130,7 @@ L__toggleClockTwelve140:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,312 :: 		updateClockDisplay(minutes / 10, 2);
+;Proj1Compiler.c,308 :: 		updateClockDisplay(minutes / 10, 2);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1149,7 +1149,7 @@ L__toggleClockTwelve140:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,313 :: 		updateClockDisplay(minutes % 10, 3);
+;Proj1Compiler.c,309 :: 		updateClockDisplay(minutes % 10, 3);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1172,10 +1172,10 @@ L__toggleClockTwelve140:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,314 :: 		} else {
+;Proj1Compiler.c,310 :: 		} else {
 	GOTO       L_toggleClockTwelve90
 L_toggleClockTwelve89:
-;Proj1Compiler.c,315 :: 		updateClockDisplay(abs(hours - 12) / 10, 0);
+;Proj1Compiler.c,311 :: 		updateClockDisplay(abs(hours - 12) / 10, 0);
 	MOVLW      12
 	SUBWF      FARG_toggleClockTwelve_hours+0, 0
 	MOVWF      FARG_abs_a+0
@@ -1197,7 +1197,7 @@ L_toggleClockTwelve89:
 	CLRF       FARG_updateClockDisplay_segIndex+0
 	CLRF       FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,316 :: 		updateClockDisplay(abs(hours - 12) % 10, 1);
+;Proj1Compiler.c,312 :: 		updateClockDisplay(abs(hours - 12) % 10, 1);
 	MOVLW      12
 	SUBWF      FARG_toggleClockTwelve_hours+0, 0
 	MOVWF      FARG_abs_a+0
@@ -1225,7 +1225,7 @@ L_toggleClockTwelve89:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,317 :: 		updateClockDisplay(minutes / 10, 2);
+;Proj1Compiler.c,313 :: 		updateClockDisplay(minutes / 10, 2);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1244,7 +1244,7 @@ L_toggleClockTwelve89:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,318 :: 		updateClockDisplay(minutes % 10, 3);
+;Proj1Compiler.c,314 :: 		updateClockDisplay(minutes % 10, 3);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1267,17 +1267,17 @@ L_toggleClockTwelve89:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,319 :: 		}
+;Proj1Compiler.c,315 :: 		}
 L_toggleClockTwelve90:
-;Proj1Compiler.c,320 :: 		}
+;Proj1Compiler.c,316 :: 		}
 L_end_toggleClockTwelve:
 	RETURN
 ; end of _toggleClockTwelve
 
 _toggleClockTwentyFour:
 
-;Proj1Compiler.c,323 :: 		void toggleClockTwentyFour(int hours, int minutes) {
-;Proj1Compiler.c,324 :: 		if (hours < 24) {
+;Proj1Compiler.c,319 :: 		void toggleClockTwentyFour(int hours, int minutes) {
+;Proj1Compiler.c,320 :: 		if (hours < 24) {
 	MOVLW      128
 	XORWF      FARG_toggleClockTwentyFour_hours+1, 0
 	MOVWF      R0+0
@@ -1290,7 +1290,7 @@ _toggleClockTwentyFour:
 L__toggleClockTwentyFour195:
 	BTFSC      STATUS+0, 0
 	GOTO       L_toggleClockTwentyFour91
-;Proj1Compiler.c,325 :: 		updateClockDisplay(hours / 10, 0);
+;Proj1Compiler.c,321 :: 		updateClockDisplay(hours / 10, 0);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1307,7 +1307,7 @@ L__toggleClockTwentyFour195:
 	CLRF       FARG_updateClockDisplay_segIndex+0
 	CLRF       FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,326 :: 		updateClockDisplay(hours % 10, 1);
+;Proj1Compiler.c,322 :: 		updateClockDisplay(hours % 10, 1);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1330,7 +1330,7 @@ L__toggleClockTwentyFour195:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,327 :: 		updateClockDisplay(minutes / 10, 2);
+;Proj1Compiler.c,323 :: 		updateClockDisplay(minutes / 10, 2);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1349,7 +1349,7 @@ L__toggleClockTwentyFour195:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,328 :: 		updateClockDisplay(minutes % 10, 3);
+;Proj1Compiler.c,324 :: 		updateClockDisplay(minutes % 10, 3);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1372,16 +1372,16 @@ L__toggleClockTwentyFour195:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,329 :: 		} else {
+;Proj1Compiler.c,325 :: 		} else {
 	GOTO       L_toggleClockTwentyFour92
 L_toggleClockTwentyFour91:
-;Proj1Compiler.c,330 :: 		updateClockDisplay(0, 0);
+;Proj1Compiler.c,326 :: 		updateClockDisplay(0, 0);
 	CLRF       FARG_updateClockDisplay_num+0
 	CLRF       FARG_updateClockDisplay_num+1
 	CLRF       FARG_updateClockDisplay_segIndex+0
 	CLRF       FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,331 :: 		updateClockDisplay(0, 1);
+;Proj1Compiler.c,327 :: 		updateClockDisplay(0, 1);
 	CLRF       FARG_updateClockDisplay_num+0
 	CLRF       FARG_updateClockDisplay_num+1
 	MOVLW      1
@@ -1389,7 +1389,7 @@ L_toggleClockTwentyFour91:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,332 :: 		updateClockDisplay(minutes / 10, 2);
+;Proj1Compiler.c,328 :: 		updateClockDisplay(minutes / 10, 2);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1408,7 +1408,7 @@ L_toggleClockTwentyFour91:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,333 :: 		updateClockDisplay(minutes % 10, 3);
+;Proj1Compiler.c,329 :: 		updateClockDisplay(minutes % 10, 3);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1431,21 +1431,21 @@ L_toggleClockTwentyFour91:
 	MOVLW      0
 	MOVWF      FARG_updateClockDisplay_segIndex+1
 	CALL       _updateClockDisplay+0
-;Proj1Compiler.c,334 :: 		}
+;Proj1Compiler.c,330 :: 		}
 L_toggleClockTwentyFour92:
-;Proj1Compiler.c,335 :: 		}
+;Proj1Compiler.c,331 :: 		}
 L_end_toggleClockTwentyFour:
 	RETURN
 ; end of _toggleClockTwentyFour
 
 _clock:
 
-;Proj1Compiler.c,338 :: 		void clock(int hours, int minutes, int clockMode) {
-;Proj1Compiler.c,339 :: 		switch (clockMode) {
+;Proj1Compiler.c,334 :: 		void clock(int hours, int minutes, int clockMode) {
+;Proj1Compiler.c,335 :: 		switch (clockMode) {
 	GOTO       L_clock93
-;Proj1Compiler.c,340 :: 		case 0:
+;Proj1Compiler.c,336 :: 		case 0:
 L_clock95:
-;Proj1Compiler.c,341 :: 		toggleClockTwelve(hours, minutes);
+;Proj1Compiler.c,337 :: 		toggleClockTwelve(hours, minutes);
 	MOVF       FARG_clock_hours+0, 0
 	MOVWF      FARG_toggleClockTwelve_hours+0
 	MOVF       FARG_clock_hours+1, 0
@@ -1455,11 +1455,11 @@ L_clock95:
 	MOVF       FARG_clock_minutes+1, 0
 	MOVWF      FARG_toggleClockTwelve_minutes+1
 	CALL       _toggleClockTwelve+0
-;Proj1Compiler.c,342 :: 		break;
+;Proj1Compiler.c,338 :: 		break;
 	GOTO       L_clock94
-;Proj1Compiler.c,343 :: 		case 1:
+;Proj1Compiler.c,339 :: 		case 1:
 L_clock96:
-;Proj1Compiler.c,344 :: 		toggleClockTwentyFour(hours, minutes);
+;Proj1Compiler.c,340 :: 		toggleClockTwentyFour(hours, minutes);
 	MOVF       FARG_clock_hours+0, 0
 	MOVWF      FARG_toggleClockTwentyFour_hours+0
 	MOVF       FARG_clock_hours+1, 0
@@ -1469,9 +1469,9 @@ L_clock96:
 	MOVF       FARG_clock_minutes+1, 0
 	MOVWF      FARG_toggleClockTwentyFour_minutes+1
 	CALL       _toggleClockTwentyFour+0
-;Proj1Compiler.c,345 :: 		break;
+;Proj1Compiler.c,341 :: 		break;
 	GOTO       L_clock94
-;Proj1Compiler.c,346 :: 		}
+;Proj1Compiler.c,342 :: 		}
 L_clock93:
 	MOVLW      0
 	XORWF      FARG_clock_clockMode+1, 0
@@ -1492,28 +1492,28 @@ L__clock198:
 	BTFSC      STATUS+0, 2
 	GOTO       L_clock96
 L_clock94:
-;Proj1Compiler.c,347 :: 		}
+;Proj1Compiler.c,343 :: 		}
 L_end_clock:
 	RETURN
 ; end of _clock
 
 _updateStopWatchDisplay:
 
-;Proj1Compiler.c,350 :: 		void updateStopWatchDisplay(int num, int segIndex) {
-;Proj1Compiler.c,351 :: 		switch (segIndex) {
+;Proj1Compiler.c,346 :: 		void updateStopWatchDisplay(int num, int segIndex) {
+;Proj1Compiler.c,347 :: 		switch (segIndex) {
 	GOTO       L_updateStopWatchDisplay97
-;Proj1Compiler.c,352 :: 		case 0:
+;Proj1Compiler.c,348 :: 		case 0:
 L_updateStopWatchDisplay99:
-;Proj1Compiler.c,353 :: 		PORTD = 0x01;  // Select the first digit
+;Proj1Compiler.c,349 :: 		PORTD = 0x01;  // Select the first digit
 	MOVLW      1
 	MOVWF      PORTD+0
-;Proj1Compiler.c,354 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,350 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateStopWatchDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,355 :: 		delay_ms(1);
+;Proj1Compiler.c,351 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -1523,20 +1523,20 @@ L_updateStopWatchDisplay100:
 	GOTO       L_updateStopWatchDisplay100
 	DECFSZ     R12+0, 1
 	GOTO       L_updateStopWatchDisplay100
-;Proj1Compiler.c,356 :: 		break;
+;Proj1Compiler.c,352 :: 		break;
 	GOTO       L_updateStopWatchDisplay98
-;Proj1Compiler.c,357 :: 		case 1:
+;Proj1Compiler.c,353 :: 		case 1:
 L_updateStopWatchDisplay101:
-;Proj1Compiler.c,358 :: 		PORTD = 0x02;  // Select the second digit
+;Proj1Compiler.c,354 :: 		PORTD = 0x02;  // Select the second digit
 	MOVLW      2
 	MOVWF      PORTD+0
-;Proj1Compiler.c,359 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,355 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateStopWatchDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,360 :: 		delay_ms(1);
+;Proj1Compiler.c,356 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -1546,20 +1546,20 @@ L_updateStopWatchDisplay102:
 	GOTO       L_updateStopWatchDisplay102
 	DECFSZ     R12+0, 1
 	GOTO       L_updateStopWatchDisplay102
-;Proj1Compiler.c,361 :: 		break;
+;Proj1Compiler.c,357 :: 		break;
 	GOTO       L_updateStopWatchDisplay98
-;Proj1Compiler.c,362 :: 		case 2:
+;Proj1Compiler.c,358 :: 		case 2:
 L_updateStopWatchDisplay103:
-;Proj1Compiler.c,363 :: 		PORTD = 0x04;  // Select the third digit
+;Proj1Compiler.c,359 :: 		PORTD = 0x04;  // Select the third digit
 	MOVLW      4
 	MOVWF      PORTD+0
-;Proj1Compiler.c,364 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,360 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateStopWatchDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,365 :: 		delay_ms(1);
+;Proj1Compiler.c,361 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -1569,20 +1569,20 @@ L_updateStopWatchDisplay104:
 	GOTO       L_updateStopWatchDisplay104
 	DECFSZ     R12+0, 1
 	GOTO       L_updateStopWatchDisplay104
-;Proj1Compiler.c,366 :: 		break;
+;Proj1Compiler.c,362 :: 		break;
 	GOTO       L_updateStopWatchDisplay98
-;Proj1Compiler.c,367 :: 		case 3:
+;Proj1Compiler.c,363 :: 		case 3:
 L_updateStopWatchDisplay105:
-;Proj1Compiler.c,368 :: 		PORTD = 0x08;  // Select the fourth digit
+;Proj1Compiler.c,364 :: 		PORTD = 0x08;  // Select the fourth digit
 	MOVLW      8
 	MOVWF      PORTD+0
-;Proj1Compiler.c,369 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,365 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateStopWatchDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,370 :: 		delay_ms(1);
+;Proj1Compiler.c,366 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -1592,9 +1592,9 @@ L_updateStopWatchDisplay106:
 	GOTO       L_updateStopWatchDisplay106
 	DECFSZ     R12+0, 1
 	GOTO       L_updateStopWatchDisplay106
-;Proj1Compiler.c,371 :: 		break;
+;Proj1Compiler.c,367 :: 		break;
 	GOTO       L_updateStopWatchDisplay98
-;Proj1Compiler.c,372 :: 		}
+;Proj1Compiler.c,368 :: 		}
 L_updateStopWatchDisplay97:
 	MOVLW      0
 	XORWF      FARG_updateStopWatchDisplay_segIndex+1, 0
@@ -1633,15 +1633,15 @@ L__updateStopWatchDisplay203:
 	BTFSC      STATUS+0, 2
 	GOTO       L_updateStopWatchDisplay105
 L_updateStopWatchDisplay98:
-;Proj1Compiler.c,373 :: 		}
+;Proj1Compiler.c,369 :: 		}
 L_end_updateStopWatchDisplay:
 	RETURN
 ; end of _updateStopWatchDisplay
 
 _stopWatch:
 
-;Proj1Compiler.c,376 :: 		void stopWatch(int swMinutes, int swSeconds) {
-;Proj1Compiler.c,378 :: 		if (swMinutes < 100) {
+;Proj1Compiler.c,372 :: 		void stopWatch(int swMinutes, int swSeconds) {
+;Proj1Compiler.c,374 :: 		if (swMinutes < 100) {
 	MOVLW      128
 	XORWF      FARG_stopWatch_swMinutes+1, 0
 	MOVWF      R0+0
@@ -1654,7 +1654,7 @@ _stopWatch:
 L__stopWatch205:
 	BTFSC      STATUS+0, 0
 	GOTO       L_stopWatch107
-;Proj1Compiler.c,379 :: 		updateStopWatchDisplay(swMinutes / 10, 0);
+;Proj1Compiler.c,375 :: 		updateStopWatchDisplay(swMinutes / 10, 0);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1671,7 +1671,7 @@ L__stopWatch205:
 	CLRF       FARG_updateStopWatchDisplay_segIndex+0
 	CLRF       FARG_updateStopWatchDisplay_segIndex+1
 	CALL       _updateStopWatchDisplay+0
-;Proj1Compiler.c,380 :: 		updateStopWatchDisplay(swMinutes % 10, 1);
+;Proj1Compiler.c,376 :: 		updateStopWatchDisplay(swMinutes % 10, 1);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1694,7 +1694,7 @@ L__stopWatch205:
 	MOVLW      0
 	MOVWF      FARG_updateStopWatchDisplay_segIndex+1
 	CALL       _updateStopWatchDisplay+0
-;Proj1Compiler.c,381 :: 		updateStopWatchDisplay(swSeconds / 10, 2);
+;Proj1Compiler.c,377 :: 		updateStopWatchDisplay(swSeconds / 10, 2);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1713,7 +1713,7 @@ L__stopWatch205:
 	MOVLW      0
 	MOVWF      FARG_updateStopWatchDisplay_segIndex+1
 	CALL       _updateStopWatchDisplay+0
-;Proj1Compiler.c,382 :: 		updateStopWatchDisplay(swSeconds % 10, 3);
+;Proj1Compiler.c,378 :: 		updateStopWatchDisplay(swSeconds % 10, 3);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1736,16 +1736,16 @@ L__stopWatch205:
 	MOVLW      0
 	MOVWF      FARG_updateStopWatchDisplay_segIndex+1
 	CALL       _updateStopWatchDisplay+0
-;Proj1Compiler.c,383 :: 		} else {
+;Proj1Compiler.c,379 :: 		} else {
 	GOTO       L_stopWatch108
 L_stopWatch107:
-;Proj1Compiler.c,384 :: 		updateStopWatchDisplay(0, 0);
+;Proj1Compiler.c,380 :: 		updateStopWatchDisplay(0, 0);
 	CLRF       FARG_updateStopWatchDisplay_num+0
 	CLRF       FARG_updateStopWatchDisplay_num+1
 	CLRF       FARG_updateStopWatchDisplay_segIndex+0
 	CLRF       FARG_updateStopWatchDisplay_segIndex+1
 	CALL       _updateStopWatchDisplay+0
-;Proj1Compiler.c,385 :: 		updateStopWatchDisplay(0, 1);
+;Proj1Compiler.c,381 :: 		updateStopWatchDisplay(0, 1);
 	CLRF       FARG_updateStopWatchDisplay_num+0
 	CLRF       FARG_updateStopWatchDisplay_num+1
 	MOVLW      1
@@ -1753,7 +1753,7 @@ L_stopWatch107:
 	MOVLW      0
 	MOVWF      FARG_updateStopWatchDisplay_segIndex+1
 	CALL       _updateStopWatchDisplay+0
-;Proj1Compiler.c,386 :: 		updateStopWatchDisplay(swSeconds / 10, 2);
+;Proj1Compiler.c,382 :: 		updateStopWatchDisplay(swSeconds / 10, 2);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1772,7 +1772,7 @@ L_stopWatch107:
 	MOVLW      0
 	MOVWF      FARG_updateStopWatchDisplay_segIndex+1
 	CALL       _updateStopWatchDisplay+0
-;Proj1Compiler.c,387 :: 		updateStopWatchDisplay(swSeconds % 10, 3);
+;Proj1Compiler.c,383 :: 		updateStopWatchDisplay(swSeconds % 10, 3);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1795,30 +1795,30 @@ L_stopWatch107:
 	MOVLW      0
 	MOVWF      FARG_updateStopWatchDisplay_segIndex+1
 	CALL       _updateStopWatchDisplay+0
-;Proj1Compiler.c,388 :: 		}
+;Proj1Compiler.c,384 :: 		}
 L_stopWatch108:
-;Proj1Compiler.c,389 :: 		}
+;Proj1Compiler.c,385 :: 		}
 L_end_stopWatch:
 	RETURN
 ; end of _stopWatch
 
 _updateTimerDisplay:
 
-;Proj1Compiler.c,392 :: 		void updateTimerDisplay(int num, int segIndex) {
-;Proj1Compiler.c,393 :: 		switch (segIndex) {
+;Proj1Compiler.c,388 :: 		void updateTimerDisplay(int num, int segIndex) {
+;Proj1Compiler.c,389 :: 		switch (segIndex) {
 	GOTO       L_updateTimerDisplay109
-;Proj1Compiler.c,394 :: 		case 0:
+;Proj1Compiler.c,390 :: 		case 0:
 L_updateTimerDisplay111:
-;Proj1Compiler.c,395 :: 		PORTD = 0x01;  // Select the first digit
+;Proj1Compiler.c,391 :: 		PORTD = 0x01;  // Select the first digit
 	MOVLW      1
 	MOVWF      PORTD+0
-;Proj1Compiler.c,396 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,392 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateTimerDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,397 :: 		delay_ms(1);
+;Proj1Compiler.c,393 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -1828,20 +1828,20 @@ L_updateTimerDisplay112:
 	GOTO       L_updateTimerDisplay112
 	DECFSZ     R12+0, 1
 	GOTO       L_updateTimerDisplay112
-;Proj1Compiler.c,398 :: 		break;
+;Proj1Compiler.c,394 :: 		break;
 	GOTO       L_updateTimerDisplay110
-;Proj1Compiler.c,399 :: 		case 1:
+;Proj1Compiler.c,395 :: 		case 1:
 L_updateTimerDisplay113:
-;Proj1Compiler.c,400 :: 		PORTD = 0x02;  // Select the second digit
+;Proj1Compiler.c,396 :: 		PORTD = 0x02;  // Select the second digit
 	MOVLW      2
 	MOVWF      PORTD+0
-;Proj1Compiler.c,401 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,397 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateTimerDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,402 :: 		delay_ms(1);
+;Proj1Compiler.c,398 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -1851,20 +1851,20 @@ L_updateTimerDisplay114:
 	GOTO       L_updateTimerDisplay114
 	DECFSZ     R12+0, 1
 	GOTO       L_updateTimerDisplay114
-;Proj1Compiler.c,403 :: 		break;
+;Proj1Compiler.c,399 :: 		break;
 	GOTO       L_updateTimerDisplay110
-;Proj1Compiler.c,404 :: 		case 2:
+;Proj1Compiler.c,400 :: 		case 2:
 L_updateTimerDisplay115:
-;Proj1Compiler.c,405 :: 		PORTD = 0x04;  // Select the third digit
+;Proj1Compiler.c,401 :: 		PORTD = 0x04;  // Select the third digit
 	MOVLW      4
 	MOVWF      PORTD+0
-;Proj1Compiler.c,406 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,402 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateTimerDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,407 :: 		delay_ms(1);
+;Proj1Compiler.c,403 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -1874,20 +1874,20 @@ L_updateTimerDisplay116:
 	GOTO       L_updateTimerDisplay116
 	DECFSZ     R12+0, 1
 	GOTO       L_updateTimerDisplay116
-;Proj1Compiler.c,408 :: 		break;
+;Proj1Compiler.c,404 :: 		break;
 	GOTO       L_updateTimerDisplay110
-;Proj1Compiler.c,409 :: 		case 3:
+;Proj1Compiler.c,405 :: 		case 3:
 L_updateTimerDisplay117:
-;Proj1Compiler.c,410 :: 		PORTD = 0x08;  // Select the fourth digit
+;Proj1Compiler.c,406 :: 		PORTD = 0x08;  // Select the fourth digit
 	MOVLW      8
 	MOVWF      PORTD+0
-;Proj1Compiler.c,411 :: 		PORTC = dispDigit[num];
+;Proj1Compiler.c,407 :: 		PORTC = dispDigit[num];
 	MOVF       FARG_updateTimerDisplay_num+0, 0
 	ADDLW      _dispDigit+0
 	MOVWF      FSR
 	MOVF       INDF+0, 0
 	MOVWF      PORTC+0
-;Proj1Compiler.c,412 :: 		delay_ms(1);
+;Proj1Compiler.c,408 :: 		delay_ms(1);
 	MOVLW      7
 	MOVWF      R12+0
 	MOVLW      125
@@ -1897,9 +1897,9 @@ L_updateTimerDisplay118:
 	GOTO       L_updateTimerDisplay118
 	DECFSZ     R12+0, 1
 	GOTO       L_updateTimerDisplay118
-;Proj1Compiler.c,413 :: 		break;
+;Proj1Compiler.c,409 :: 		break;
 	GOTO       L_updateTimerDisplay110
-;Proj1Compiler.c,414 :: 		}
+;Proj1Compiler.c,410 :: 		}
 L_updateTimerDisplay109:
 	MOVLW      0
 	XORWF      FARG_updateTimerDisplay_segIndex+1, 0
@@ -1938,15 +1938,15 @@ L__updateTimerDisplay210:
 	BTFSC      STATUS+0, 2
 	GOTO       L_updateTimerDisplay117
 L_updateTimerDisplay110:
-;Proj1Compiler.c,415 :: 		}
+;Proj1Compiler.c,411 :: 		}
 L_end_updateTimerDisplay:
 	RETURN
 ; end of _updateTimerDisplay
 
 _timer:
 
-;Proj1Compiler.c,418 :: 		void timer(int tmrMinutes, int tmrSeconds) {
-;Proj1Compiler.c,420 :: 		if (tmrMinutes < 100) {
+;Proj1Compiler.c,414 :: 		void timer(int tmrMinutes, int tmrSeconds) {
+;Proj1Compiler.c,416 :: 		if (tmrMinutes < 100) {
 	MOVLW      128
 	XORWF      FARG_timer_tmrMinutes+1, 0
 	MOVWF      R0+0
@@ -1959,7 +1959,7 @@ _timer:
 L__timer212:
 	BTFSC      STATUS+0, 0
 	GOTO       L_timer119
-;Proj1Compiler.c,421 :: 		updateTimerDisplay(tmrMinutes / 10, 0);
+;Proj1Compiler.c,417 :: 		updateTimerDisplay(tmrMinutes / 10, 0);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1976,7 +1976,7 @@ L__timer212:
 	CLRF       FARG_updateTimerDisplay_segIndex+0
 	CLRF       FARG_updateTimerDisplay_segIndex+1
 	CALL       _updateTimerDisplay+0
-;Proj1Compiler.c,422 :: 		updateTimerDisplay(tmrMinutes % 10, 1);
+;Proj1Compiler.c,418 :: 		updateTimerDisplay(tmrMinutes % 10, 1);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -1999,7 +1999,7 @@ L__timer212:
 	MOVLW      0
 	MOVWF      FARG_updateTimerDisplay_segIndex+1
 	CALL       _updateTimerDisplay+0
-;Proj1Compiler.c,423 :: 		updateTimerDisplay(tmrSeconds / 10, 2);
+;Proj1Compiler.c,419 :: 		updateTimerDisplay(tmrSeconds / 10, 2);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -2018,7 +2018,7 @@ L__timer212:
 	MOVLW      0
 	MOVWF      FARG_updateTimerDisplay_segIndex+1
 	CALL       _updateTimerDisplay+0
-;Proj1Compiler.c,424 :: 		updateTimerDisplay(tmrSeconds % 10, 3);
+;Proj1Compiler.c,420 :: 		updateTimerDisplay(tmrSeconds % 10, 3);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -2041,16 +2041,16 @@ L__timer212:
 	MOVLW      0
 	MOVWF      FARG_updateTimerDisplay_segIndex+1
 	CALL       _updateTimerDisplay+0
-;Proj1Compiler.c,425 :: 		} else {
+;Proj1Compiler.c,421 :: 		} else {
 	GOTO       L_timer120
 L_timer119:
-;Proj1Compiler.c,426 :: 		updateTimerDisplay(0, 0);
+;Proj1Compiler.c,422 :: 		updateTimerDisplay(0, 0);
 	CLRF       FARG_updateTimerDisplay_num+0
 	CLRF       FARG_updateTimerDisplay_num+1
 	CLRF       FARG_updateTimerDisplay_segIndex+0
 	CLRF       FARG_updateTimerDisplay_segIndex+1
 	CALL       _updateTimerDisplay+0
-;Proj1Compiler.c,427 :: 		updateTimerDisplay(0, 1);
+;Proj1Compiler.c,423 :: 		updateTimerDisplay(0, 1);
 	CLRF       FARG_updateTimerDisplay_num+0
 	CLRF       FARG_updateTimerDisplay_num+1
 	MOVLW      1
@@ -2058,7 +2058,7 @@ L_timer119:
 	MOVLW      0
 	MOVWF      FARG_updateTimerDisplay_segIndex+1
 	CALL       _updateTimerDisplay+0
-;Proj1Compiler.c,428 :: 		updateTimerDisplay(tmrSeconds / 10, 2);
+;Proj1Compiler.c,424 :: 		updateTimerDisplay(tmrSeconds / 10, 2);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -2077,7 +2077,7 @@ L_timer119:
 	MOVLW      0
 	MOVWF      FARG_updateTimerDisplay_segIndex+1
 	CALL       _updateTimerDisplay+0
-;Proj1Compiler.c,429 :: 		updateTimerDisplay(tmrSeconds % 10, 3);
+;Proj1Compiler.c,425 :: 		updateTimerDisplay(tmrSeconds % 10, 3);
 	MOVLW      10
 	MOVWF      R4+0
 	MOVLW      0
@@ -2100,23 +2100,23 @@ L_timer119:
 	MOVLW      0
 	MOVWF      FARG_updateTimerDisplay_segIndex+1
 	CALL       _updateTimerDisplay+0
-;Proj1Compiler.c,430 :: 		}
+;Proj1Compiler.c,426 :: 		}
 L_timer120:
-;Proj1Compiler.c,431 :: 		}
+;Proj1Compiler.c,427 :: 		}
 L_end_timer:
 	RETURN
 ; end of _timer
 
 _main:
 
-;Proj1Compiler.c,449 :: 		void main() {
-;Proj1Compiler.c,450 :: 		portInit();                 // Initialize the ports
+;Proj1Compiler.c,445 :: 		void main() {
+;Proj1Compiler.c,446 :: 		portInit();                 // Initialize the ports
 	CALL       _portInit+0
-;Proj1Compiler.c,451 :: 		interruptInit();            // Initialize the interrupts
+;Proj1Compiler.c,447 :: 		interruptInit();            // Initialize the interrupts
 	CALL       _interruptInit+0
-;Proj1Compiler.c,453 :: 		while (1) {
+;Proj1Compiler.c,449 :: 		while (1) {
 L_main121:
-;Proj1Compiler.c,454 :: 		if (sysMode == 0 || sysMode == 1) {
+;Proj1Compiler.c,450 :: 		if (sysMode == 0 || sysMode == 1) {
 	MOVLW      0
 	XORWF      _sysMode+1, 0
 	BTFSS      STATUS+0, 2
@@ -2137,7 +2137,7 @@ L__main215:
 	GOTO       L__main141
 	GOTO       L_main125
 L__main141:
-;Proj1Compiler.c,455 :: 		clock(hours, minutes, clockMode);
+;Proj1Compiler.c,451 :: 		clock(hours, minutes, clockMode);
 	MOVF       _hours+0, 0
 	MOVWF      FARG_clock_hours+0
 	MOVF       _hours+1, 0
@@ -2151,7 +2151,7 @@ L__main141:
 	MOVF       _clockMode+1, 0
 	MOVWF      FARG_clock_clockMode+1
 	CALL       _clock+0
-;Proj1Compiler.c,456 :: 		} else if (sysMode == 2) {
+;Proj1Compiler.c,452 :: 		} else if (sysMode == 2) {
 	GOTO       L_main126
 L_main125:
 	MOVLW      0
@@ -2163,7 +2163,7 @@ L_main125:
 L__main216:
 	BTFSS      STATUS+0, 2
 	GOTO       L_main127
-;Proj1Compiler.c,457 :: 		stopWatch(swMinutes, swSeconds);
+;Proj1Compiler.c,453 :: 		stopWatch(swMinutes, swSeconds);
 	MOVF       _swMinutes+0, 0
 	MOVWF      FARG_stopWatch_swMinutes+0
 	MOVF       _swMinutes+1, 0
@@ -2173,7 +2173,7 @@ L__main216:
 	MOVF       _swSeconds+1, 0
 	MOVWF      FARG_stopWatch_swSeconds+1
 	CALL       _stopWatch+0
-;Proj1Compiler.c,458 :: 		} else if (sysMode == 3) {
+;Proj1Compiler.c,454 :: 		} else if (sysMode == 3) {
 	GOTO       L_main128
 L_main127:
 	MOVLW      0
@@ -2185,7 +2185,7 @@ L_main127:
 L__main217:
 	BTFSS      STATUS+0, 2
 	GOTO       L_main129
-;Proj1Compiler.c,459 :: 		timer(tmrMinutes, tmrSeconds);
+;Proj1Compiler.c,455 :: 		timer(tmrMinutes, tmrSeconds);
 	MOVF       _tmrMinutes+0, 0
 	MOVWF      FARG_timer_tmrMinutes+0
 	MOVF       _tmrMinutes+1, 0
@@ -2195,13 +2195,13 @@ L__main217:
 	MOVF       _tmrSeconds+1, 0
 	MOVWF      FARG_timer_tmrSeconds+1
 	CALL       _timer+0
-;Proj1Compiler.c,461 :: 		}  // TODO: Add a case for the alarm
+;Proj1Compiler.c,457 :: 		}  // TODO: Add a case for the alarm
 L_main129:
 L_main128:
 L_main126:
-;Proj1Compiler.c,462 :: 		}
+;Proj1Compiler.c,458 :: 		}
 	GOTO       L_main121
-;Proj1Compiler.c,463 :: 		}
+;Proj1Compiler.c,459 :: 		}
 L_end_main:
 	GOTO       $+0
 ; end of _main

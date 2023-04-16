@@ -1,12 +1,12 @@
 0	1	mikroCPIC1618.exe -MSF -DBG -pP16F877A -DL -O11111114 -fo20 -N"\\Mac\Home\Documents\GitHub\Charmbix-LBYEC3L-Proj1\mikroC\Proj1Compiler.mcppi" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\defs\" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\" -SP"\\Mac\Home\Documents\GitHub\Charmbix-LBYEC3L-Proj1\mikroC\" "Proj1Compiler.c" "__Lib_Math.mcl" "__Lib_MathDouble.mcl" "__Lib_System.mcl" "__Lib_Delays.mcl" "__Lib_CType.mcl" "__Lib_CStdlib.mcl"	 
 hint: 0	1139	Available RAM: 352 [bytes], Available ROM: 8192 [bytes]	 
-diagnostics: 0	126	All files Preprocessed in 141 ms	 
+diagnostics: 0	126	All files Preprocessed in 110 ms	 
 diagnostics: 0	122	Compilation Started	Proj1Compiler.c
-diagnostics: 463	123	Compiled Successfully	Proj1Compiler.c
-diagnostics: 0	127	All files Compiled in 156 ms	 
+diagnostics: 459	123	Compiled Successfully	Proj1Compiler.c
+diagnostics: 0	127	All files Compiled in 125 ms	 
 hint: 0	1144	Used RAM (bytes): 60 (17%)  Free RAM (bytes): 292 (83%)	Used RAM (bytes): 60 (17%)  Free RAM (bytes): 292 (83%)
 hint: 0	1144	Used ROM (program words): 2012 (25%)  Free ROM (program words): 6180 (75%)	Used ROM (program words): 2012 (25%)  Free ROM (program words): 6180 (75%)
 diagnostics: 0	125	Project Linked Successfully	Proj1Compiler.mcppi
-diagnostics: 0	128	Linked in 156 ms	 
-diagnostics: 0	129	Project 'Proj1Compiler.mcppi' completed: 609 ms	 
-diagnostics: 0	103	Finished successfully: 16 Apr 2023, 22:50:46	Proj1Compiler.mcppi
+diagnostics: 0	128	Linked in 47 ms	 
+diagnostics: 0	129	Project 'Proj1Compiler.mcppi' completed: 485 ms	 
+diagnostics: 0	103	Finished successfully: 16 Apr 2023, 22:56:01	Proj1Compiler.mcppi
