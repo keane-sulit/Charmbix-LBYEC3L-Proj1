@@ -1,8 +1,12 @@
 /*
 Project: PIC16F877A Digital Clock using Multiplexed 7-Segment Displays
 
-Build Date: 2023.04.16 04:09 PM
-Final Build Version: 1.0.0
+Build Date: 2023.04.16 10:50 PM
+Final Build Version: 1.0.1
+
+Fixes:
+1.0.0 - Initial build
+1.0.1 - `blink()` function was removed since it was causing the clock to break.
 
 Build Status
 - [o] Clock Mode (24hr/12hr)
@@ -188,7 +192,7 @@ void interrupt() {
         INTCON.f1 = 0;  // Clear RB0 External Interrupt Flag
     }
 
-    // TODO: ISR for RB Port Change Interrupt
+    // ISR for RB Port Change Interrupt
     if (INTCON.f0 == 1) {
 
         // PAUSE/GO button: Pause or resume system
@@ -431,16 +435,19 @@ void timer(int tmrMinutes, int tmrSeconds) {
 }
 
 // FIXME: Fix this function since it recurses infinitely
-void blink() {
+/* void blink() {
     if (tmrSeconds == 0 && tmrMinutes == 0) {
-        PORTD = 0x00;
-        PORTC = 0x00;
-        delay_ms(500);
-        PORTD = 0x0F;
-        PORTC = 0xFF;
-        delay_ms(500);
+        for (i == 0; i < 10; i++) {
+            PORTD = 0x00;
+            PORTC = 0x00;
+            delay_ms(500);
+            PORTD = 0x0F;
+            PORTC = 0xFF;
+            delay_ms(500);
+        }
+        return;
     }
-}
+} */
 
 // Main function
 void main() {
@@ -454,7 +461,7 @@ void main() {
             stopWatch(swMinutes, swSeconds);
         } else if (sysMode == 3) {
             timer(tmrMinutes, tmrSeconds);
-            blink();
+            /* blink(); */
         }  // TODO: Add a case for the alarm
     }
 }

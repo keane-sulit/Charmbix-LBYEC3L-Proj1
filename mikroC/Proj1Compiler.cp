@@ -43,10 +43,13 @@ unsigned int incrementFlag = 0;
 char dispDigit[10] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99,
  0x92, 0x82, 0xF8, 0x80, 0x90};
 
+
 void portInit() {
  TRISC = 0x00;
  TRISD = 0x00;
 }
+
+
 
 void interruptInit() {
  INTCON.f7 = 1;
@@ -106,8 +109,9 @@ void update() {
 
  return;
  }
-#line 143 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
+#line 146 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
 }
+
 
 void interrupt() {
  INTCON.f7 = 0;
@@ -392,19 +396,7 @@ void timer(int tmrMinutes, int tmrSeconds) {
  updateTimerDisplay(tmrSeconds % 10, 3);
  }
 }
-
-
-void blink() {
- if (tmrSeconds == 0 && tmrMinutes == 0) {
- PORTD = 0x00;
- PORTC = 0x00;
- delay_ms(500);
- PORTD = 0x0F;
- PORTC = 0xFF;
- delay_ms(500);
- }
-}
-
+#line 449 "//Mac/Home/Documents/GitHub/Charmbix-LBYEC3L-Proj1/mikroC/Proj1Compiler.c"
 void main() {
  portInit();
  interruptInit();
@@ -416,7 +408,7 @@ void main() {
  stopWatch(swMinutes, swSeconds);
  } else if (sysMode == 3) {
  timer(tmrMinutes, tmrSeconds);
- blink();
+
  }
  }
 }

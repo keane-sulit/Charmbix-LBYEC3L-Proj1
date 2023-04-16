@@ -21,7 +21,6 @@ main
 		Div_16x16_S
 			Div_16x16_S_L
 		updateTimerDisplay
-	blink
 interrupt
 	update
 	Div_16x16_U
